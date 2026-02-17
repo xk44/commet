@@ -150,7 +150,7 @@ P1/P2 — Platform support, packaging, and distribution
 - [ ] Change language on desktop client (GHI #641) https://github.com/commetchat/commet/issues/641
 - [ ] Minimize to tray (GHI #72) https://github.com/commetchat/commet/issues/72
 - [ ] Use native titlebar on Linux (GHI #392) https://github.com/commetchat/commet/issues/392
-- [ ] Store logs to file (GHI #389) https://github.com/commetchat/commet/issues/389
+- [x] Store logs to file (GHI #389) https://github.com/commetchat/commet/issues/389
 - [ ] PWA icon dark variant (Chromebooks) (GHI #398) https://github.com/commetchat/commet/issues/398
 
 ===========================================================
