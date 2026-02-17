@@ -77,7 +77,7 @@ P1 — Messaging UX, search, and productivity (DP)
 - [ ] Allow searching for rooms (GHI #131) https://github.com/commetchat/commet/issues/131
 
 ## Input / message controls (P1)
-- [ ] Up arrow to edit last message (GHI #600) https://github.com/commetchat/commet/issues/600
+- [x] Up arrow to edit last message (GHI #600) https://github.com/commetchat/commet/issues/600
 - [x] “Delete without confirmation” option (GHI #639) https://github.com/commetchat/commet/issues/639
 - [x] Highlight @room mentions (GHI #592) https://github.com/commetchat/commet/issues/592
 - [ ] Collapse membership/state spam in rooms (GHI #598) https://github.com/commetchat/commet/issues/598
