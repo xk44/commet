@@ -98,7 +98,7 @@ P1 — Spaces/servers, permissions, and moderation (DP)
 ===========================================================
 
 ## Spaces/rooms correctness (P1)
-- [ ] Fix newly created spaces named “Empty Chat” with no topic (GHI #664) https://github.com/commetchat/commet/issues/664
+- [x] Fix newly created spaces named “Empty Chat” with no topic (GHI #664) https://github.com/commetchat/commet/issues/664
 - [x] Fix misleading space notifications option (GHI #678) https://github.com/commetchat/commet/issues/678
 - [ ] Restricted room support (GHI #627) https://github.com/commetchat/commet/issues/627
 
