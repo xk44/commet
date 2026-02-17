@@ -161,7 +161,7 @@ P2 — Accessibility, notifications tuning, and calendar
 - [ ] Fix screen readers not reading space names (GHI #384) https://github.com/commetchat/commet/issues/384
 
 ## Links / basic OS integration (P1)
-- [ ] Fix links not opening in browser/apps (GHI #637) https://github.com/commetchat/commet/issues/637
+- [x] Fix links not opening in browser/apps (GHI #637) https://github.com/commetchat/commet/issues/637
 
 ## Calendar (P2)
 - [ ] Fix all-day events saved one day off when updating (GHI #633) https://github.com/commetchat/commet/issues/633
