@@ -6,9 +6,19 @@ import 'package:flutter/material.dart' as material;
 
 class RoomGeneralSettingsView extends StatelessWidget {
   const RoomGeneralSettingsView(
-      {super.key, required this.pushRule, this.onPushRuleChanged});
+      {super.key,
+      required this.pushRule,
+      this.onPushRuleChanged,
+      this.labelPushRuleNotifyAllOverride,
+      this.labelPushRuleMentionsAndKeywordsOverride,
+      this.labelPushRuleNoneOverride,
+      this.labelRoomSettingsNotificationsOverride});
   final PushRule pushRule;
   final void Function(PushRule? rule)? onPushRuleChanged;
+  final String? labelPushRuleNotifyAllOverride;
+  final String? labelPushRuleMentionsAndKeywordsOverride;
+  final String? labelPushRuleNoneOverride;
+  final String? labelRoomSettingsNotificationsOverride;
 
   String get labelPushRuleNotifyAll => Intl.message("All Messages",
       desc: "Label for the push rule which notifies for all received messages",
@@ -28,6 +38,19 @@ class RoomGeneralSettingsView extends StatelessWidget {
       desc: "Label for the notifications section in room settings",
       name: "labelRoomSettingsNotifications");
 
+  String get computedLabelPushRuleNotifyAll =>
+      labelPushRuleNotifyAllOverride ?? labelPushRuleNotifyAll;
+
+  String get computedLabelPushRuleMentionsAndKeywords =>
+      labelPushRuleMentionsAndKeywordsOverride ??
+      labelPushRuleMentionsAndKeywords;
+
+  String get computedLabelPushRuleNone =>
+      labelPushRuleNoneOverride ?? labelPushRuleNone;
+
+  String get computedLabelRoomSettingsNotifications =>
+      labelRoomSettingsNotificationsOverride ?? labelRoomSettingsNotifications;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -38,7 +61,7 @@ class RoomGeneralSettingsView extends StatelessWidget {
   Widget notificationSettings() {
     return tiamat.Panel(
         mode: tiamat.TileType.surfaceContainerLow,
-        header: labelRoomSettingsNotifications,
+        header: computedLabelRoomSettingsNotifications,
         child: material.Material(
           color: material.Colors.transparent,
           child: Column(
@@ -47,21 +70,21 @@ class RoomGeneralSettingsView extends StatelessWidget {
                 groupValue: pushRule,
                 value: PushRule.notify,
                 icon: material.Icons.notifications_active_outlined,
-                text: labelPushRuleNotifyAll,
+                text: computedLabelPushRuleNotifyAll,
                 onChanged: onPushRuleChanged,
               ),
               tiamat.RadioButton<PushRule>(
                 groupValue: pushRule,
                 value: PushRule.mentionsOnly,
                 icon: material.Icons.notification_important_outlined,
-                text: labelPushRuleMentionsAndKeywords,
+                text: computedLabelPushRuleMentionsAndKeywords,
                 onChanged: onPushRuleChanged,
               ),
               tiamat.RadioButton<PushRule>(
                 groupValue: pushRule,
                 value: PushRule.dontNotify,
                 icon: material.Icons.notifications_off_outlined,
-                text: labelPushRuleNone,
+                text: computedLabelPushRuleNone,
                 onChanged: onPushRuleChanged,
               )
             ],
