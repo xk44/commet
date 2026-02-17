@@ -1,0 +1,169 @@
+Acronyms:
+- GHI = GitHub Issue
+- DP  = Discord parity (features Discord users expect)
+- MHS = Matrix homeserver
+- E2EE = end-to-end encryption
+- SS = screen share
+
+Severity legend:
+- P0 = crash / data loss / security / “app feels broken”
+- P1 = major feature gap / big UX pain
+- P2 = polish / QoL / nice-to-have
+
+===========================================================
+P0 — Data safety, encryption, and “don’t brick the app”
+===========================================================
+
+## E2EE / verification / key management (P0)
+- [ ] Fix encrypted threads failing to decrypt (GHI #690) https://github.com/commetchat/commet/issues/690
+  - [ ] Add robust retry + fallback for thread event decryption
+  - [ ] Improve diagnostics (surface which session/key is missing)
+- [ ] Fix “can’t see encrypted message that can be seen on other apps” (GHI #388) https://github.com/commetchat/commet/issues/388
+- [ ] Fix “New login session verification not working” (GHI #668) https://github.com/commetchat/commet/issues/668
+- [ ] Fix “Confirm session key button not working [WINDOWS ONLY]” (GHI #675) https://github.com/commetchat/commet/issues/675
+- [ ] Fix crash: beginVerification null check operator (GHI #680) https://github.com/commetchat/commet/issues/680
+- [ ] Fix “Unable to verify sessions from Android only” (GHI #380) https://github.com/commetchat/commet/issues/380
+- [ ] Add clear UX feedback for unverified sessions (GHI #101) https://github.com/commetchat/commet/issues/101
+- [ ] Add manual key import/export (GHI #631) https://github.com/commetchat/commet/issues/631
+  - [ ] Export encrypted backup file w/ passphrase + QR option
+  - [ ] Import flow with validation + “dry run” (what will be restored)
+  - [ ] Add “you will lose access to old messages if…” warnings
+
+## Crashes / corruption / startup blockers (P0)
+- [ ] Fix crash/out-of-memory leading to DB corruption (GHI #296) https://github.com/commetchat/commet/issues/296
+  - [ ] Add DB integrity checks + auto-repair / safe reset options
+  - [ ] Reduce peak memory (timeline virtualization, image cache caps)
+  - [ ] Add watchdog to prevent “corrupt on crash” write patterns
+- [ ] Fix Windows startup freeze if temp folder exists (GHI #674) https://github.com/commetchat/commet/issues/674
+- [ ] Ship libcrypto.dll in Windows installer (GHI #672) https://github.com/commetchat/commet/issues/672
+- [ ] Fix auth webview crash on KDE + Nvidia (GHI #640) https://github.com/commetchat/commet/issues/640
+
+## Core navigation reliability (P0)
+- [ ] Fix notifications opening wrong room (GHI #591) https://github.com/commetchat/commet/issues/591
+- [ ] Fix “Open whole space instead of subspace from notification” (GHI #383) https://github.com/commetchat/commet/issues/383
+
+===========================================================
+P1 — Calls, streaming, and Discord-level real-time features
+===========================================================
+
+## Calls / voice / SS (P1, some P0)
+- [ ] Fix app freeze when first enabling webcam (GHI #670) https://github.com/commetchat/commet/issues/670
+- [ ] Fix voice channel default permissions (“moderator only” bug) (GHI #628) https://github.com/commetchat/commet/issues/628
+- [ ] Implement/track Element Call integration (GHI #450) https://github.com/commetchat/commet/issues/450
+  - [ ] Use it as the path to reliable group calls + better SS + scalability
+- [ ] (NEW) Fix SS low framerate + add SS audio
+  - [ ] Desktop SS: add FPS/resolution/bitrate controls + adaptive bitrate
+  - [ ] SS audio: implement system-audio capture/loopback (platform-specific)
+  - [ ] Add “SS quality presets” (Auto / Smooth / Low CPU / Low bandwidth)
+  - [ ] Measure + expose pipeline stats (encode fps, dropped frames, RTT, loss)
+- [ ] Improve audio stack: VAD / auto mic threshold / noise suppression (GHI #603) https://github.com/commetchat/commet/issues/603
+  - [ ] Optional AGC + RNNoise/WebRTC NS toggles
+  - [ ] Per-device input selection + test meter
+- [ ] Add voice note support (GHI #397) https://github.com/commetchat/commet/issues/397
+
+## DP gaps in calling (create issues)
+- [ ] (NEW / DP) Push-to-talk + global hotkeys + per-server keybinds
+- [ ] (NEW / DP) Better call UX: overlay, participant list, quick mute/deafen
+- [ ] (NEW / DP) Stage-like rooms / speaker requests (if desired in Matrix terms)
+- [ ] (NEW / DP) Streaming safety: “don’t stream audio unless enabled”, indicators
+
+===========================================================
+P1 — Messaging UX, search, and productivity (DP)
+===========================================================
+
+## DM / navigation / reading state (P1)
+- [ ] Start new DMs with user search / username input (GHI #691) https://github.com/commetchat/commet/issues/691
+- [ ] Ability to mark a message as last read (GHI #671) https://github.com/commetchat/commet/issues/671
+- [ ] Allow searching for rooms (GHI #131) https://github.com/commetchat/commet/issues/131
+
+## Input / message controls (P1)
+- [ ] Up arrow to edit last message (GHI #600) https://github.com/commetchat/commet/issues/600
+- [ ] “Delete without confirmation” option (GHI #639) https://github.com/commetchat/commet/issues/639
+- [ ] Highlight @room mentions (GHI #592) https://github.com/commetchat/commet/issues/592
+- [ ] Collapse membership/state spam in rooms (GHI #598) https://github.com/commetchat/commet/issues/598
+- [ ] Fix duplicate DM entries after room upgrades (GHI #597) https://github.com/commetchat/commet/issues/597
+- [ ] Allow custom state events (GHI #589) https://github.com/commetchat/commet/issues/589
+- [ ] Disable auto-playing animated media (GHI #588) https://github.com/commetchat/commet/issues/588
+- [ ] Fix .svg profile picture not showing (GHI #576) https://github.com/commetchat/commet/issues/576
+
+## Polls (P1)
+- [ ] Support polls using MSC3381 (GHI #601) https://github.com/commetchat/commet/issues/601
+
+## Timeline performance / polish (P1)
+- [ ] Timeline UX megathread improvements (GHI #2) https://github.com/commetchat/commet/issues/2
+  - [ ] Smooth scroll toggle, virtualization improvements, etc.
+
+===========================================================
+P1 — Spaces/servers, permissions, and moderation (DP)
+===========================================================
+
+## Spaces/rooms correctness (P1)
+- [ ] Fix newly created spaces named “Empty Chat” with no topic (GHI #664) https://github.com/commetchat/commet/issues/664
+- [ ] Fix misleading space notifications option (GHI #678) https://github.com/commetchat/commet/issues/678
+- [ ] Restricted room support (GHI #627) https://github.com/commetchat/commet/issues/627
+
+## DP gaps (create issues)
+- [ ] (NEW / DP) Roles/permissions UI comparable to Discord roles/channel perms
+- [ ] (NEW / DP) Moderation tools: timeouts, quick ban/kick, audit log view
+- [ ] (NEW / DP) Better server discovery / invite UX / onboarding flows
+- [ ] (NEW / DP) “Forum-like” channels / topic threads (if desired)
+
+===========================================================
+P1 — Matrix onboarding, federation, and “setup isn’t a hobby”
+===========================================================
+
+## Better MHS onboarding (P1)
+- [ ] Show helpful error when MHS does not exist (GHI #405) https://github.com/commetchat/commet/issues/405
+- [ ] Improve invalid login error UX (GHI #404) https://github.com/commetchat/commet/issues/404
+- [ ] Login screen input validation (no spaces, case rules, etc.) (GHI #117) https://github.com/commetchat/commet/issues/117
+
+## “Autodeploy Matrix” (P1) — reduce the Matrix setup pain (your request)
+- [ ] (NEW) Publish “Commet Federation Kit” (CFK): an opinionated, single-command deploy for a production-grade MHS
+  - [ ] Provide Docker Compose + docs (Synapse OR Dendrite/Conduit), Postgres, reverse proxy w/ ACME TLS
+  - [ ] Include federation-ready defaults + .well-known templates
+  - [ ] Include TURN (coturn) pre-config for calls/SS
+  - [ ] Provide healthchecks + monitoring hooks (Prometheus/Grafana optional)
+  - [ ] Add a “bring your own domain” wizard script + idempotent upgrades
+  - [ ] Provide “non-federated/simple mode” for people who just want a private server fast
+  - [ ] Provide a “recommended ports + firewall rules” checklist
+  - [ ] Add a “quick troubleshoot” command that bundles sanitized logs
+
+===========================================================
+P1/P2 — Platform support, packaging, and distribution
+===========================================================
+
+## Missing apps (DP) — macOS / iOS (your request)
+- [ ] (NEW / DP) macOS app: signed build + updater + Apple silicon testing
+- [ ] (NEW / DP) iOS app: push notifications, call integration, background behavior
+  - [ ] Ensure E2EE + verification UX works well on mobile
+  - [ ] Ensure SS/calls behave under iOS constraints
+
+## Linux packaging + distro ergonomics (P1)
+- [ ] Trouble installing .deb on KDE Ubuntu (GHI #684) https://github.com/commetchat/commet/issues/684
+- [ ] Fix .deb landing in filesystem root (GHI #575) https://github.com/commetchat/commet/issues/575
+- [ ] Request AUR package (GHI #357) https://github.com/commetchat/commet/issues/357
+- [ ] Debian ARM64 support (GHI #371) https://github.com/commetchat/commet/issues/371
+- [ ] Add to F-Droid (GHI #115) https://github.com/commetchat/commet/issues/115
+- [ ] Docker image? (client/container story) (GHI #635) https://github.com/commetchat/commet/issues/635
+
+## Desktop QoL (P2)
+- [ ] Change language on desktop client (GHI #641) https://github.com/commetchat/commet/issues/641
+- [ ] Minimize to tray (GHI #72) https://github.com/commetchat/commet/issues/72
+- [ ] Use native titlebar on Linux (GHI #392) https://github.com/commetchat/commet/issues/392
+- [ ] Store logs to file (GHI #389) https://github.com/commetchat/commet/issues/389
+- [ ] PWA icon dark variant (Chromebooks) (GHI #398) https://github.com/commetchat/commet/issues/398
+
+===========================================================
+P2 — Accessibility, notifications tuning, and calendar
+===========================================================
+
+## Accessibility (P2, but important)
+- [ ] Fix screen readers not reading space names (GHI #384) https://github.com/commetchat/commet/issues/384
+
+## Links / basic OS integration (P1)
+- [ ] Fix links not opening in browser/apps (GHI #637) https://github.com/commetchat/commet/issues/637
+
+## Calendar (P2)
+- [ ] Fix all-day events saved one day off when updating (GHI #633) https://github.com/commetchat/commet/issues/633
+- [ ] Calendar-integrated availability / ready-up system (GHI #626) https://github.com/commetchat/commet/issues/626
+- [ ] Incorporate Linux Flatpak feedback (GHI #632) https://github.com/commetchat/commet/issues/632
