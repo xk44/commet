@@ -158,7 +158,7 @@ P2 — Accessibility, notifications tuning, and calendar
 ===========================================================
 
 ## Accessibility (P2, but important)
-- [ ] Fix screen readers not reading space names (GHI #384) https://github.com/commetchat/commet/issues/384
+- [x] Fix screen readers not reading space names (GHI #384) https://github.com/commetchat/commet/issues/384
 
 ## Links / basic OS integration (P1)
 - [x] Fix links not opening in browser/apps (GHI #637) https://github.com/commetchat/commet/issues/637

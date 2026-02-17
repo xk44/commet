@@ -73,21 +73,30 @@ class _SpaceIconState extends State<SpaceIcon> {
 
   @override
   Widget build(BuildContext context) {
+    final semanticLabel = widget.displayName.trim().isNotEmpty
+        ? widget.displayName
+        : "Space";
+
     return Stack(children: [
       SideNavigationBar.tooltip(
           widget.displayName,
-          ImageButton(
-            border: selected
-                ? Border.all(
-                    color: ColorScheme.of(context).inverseSurface,
-                    width: 3,
-                    strokeAlign: 0.5)
-                : null,
-            image: widget.avatar,
-            onTap: widget.onTap,
-            size: widget.width,
-            placeholderColor: widget.placeholderColor,
-            placeholderText: widget.displayName,
+          Semantics(
+            label: semanticLabel,
+            button: true,
+            selected: selected,
+            child: ImageButton(
+              border: selected
+                  ? Border.all(
+                      color: ColorScheme.of(context).inverseSurface,
+                      width: 3,
+                      strokeAlign: 0.5)
+                  : null,
+              image: widget.avatar,
+              onTap: widget.onTap,
+              size: widget.width,
+              placeholderColor: widget.placeholderColor,
+              placeholderText: widget.displayName,
+            ),
           ),
           context),
       if (widget.showUser) avatarOverlay(),
