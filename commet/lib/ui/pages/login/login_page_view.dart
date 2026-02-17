@@ -28,6 +28,7 @@ class LoginPageView extends StatefulWidget {
       this.isServerValid = false,
       this.hasSsoSupport = false,
       this.hasPasswordSupport = false,
+      this.homeserverErrorMessage,
       this.updateHomeserver});
   final bool canNavigateBack;
   final bool isLoggingIn;
@@ -38,6 +39,7 @@ class LoginPageView extends StatefulWidget {
   final bool isServerValid;
   final bool hasSsoSupport;
   final bool hasPasswordSupport;
+  final String? homeserverErrorMessage;
   final Future<void> Function(SsoLoginFlow flow)? doSsoLogin;
   final Future<void> Function(
           PasswordLoginFlow flow, String username, String password)?
@@ -357,10 +359,12 @@ class _LoginPageViewState extends State<LoginPageView> {
       keyboardType: TextInputType.url,
       inputFormatters: [FilteringTextInputFormatter.deny(RegExp("[ ]"))],
       decoration: InputDecoration(
-          prefixText: 'https://',
-          border: const OutlineInputBorder(),
-          labelText: promptHomeserver,
-          suffix: homeserverEntrySuffix()),
+        prefixText: 'https://',
+        border: const OutlineInputBorder(),
+        labelText: promptHomeserver,
+        suffix: homeserverEntrySuffix(),
+        errorText: widget.homeserverErrorMessage,
+      ),
     );
   }
 
