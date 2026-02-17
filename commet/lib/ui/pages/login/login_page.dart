@@ -29,6 +29,13 @@ class LoginPageState extends State<LoginPage> {
       desc:
           "A generic error message to convey that an error occured when attempting to login");
 
+  String get messageInvalidLoginInput => Intl.message(
+        "Please enter a valid homeserver, username, and password",
+        name: "messageInvalidLoginInput",
+        desc:
+            "Shown when login fields are invalid before attempting password login",
+      );
+
   String get messageAlreadyLoggedIn => Intl.message(
         "You have already logged in to this account",
         name: "messageAlreadyLoggedIn",
@@ -138,8 +145,25 @@ class LoginPageState extends State<LoginPage> {
   Future<void> doPasswordLogin(
       PasswordLoginFlow flow, String username, String password) async {
     if (loginClient == null) return;
-    flow.username = username;
-    flow.password = password;
+
+    var normalizedUsername = username.trim();
+    var normalizedPassword = password.trim();
+
+    if (normalizedUsername.isEmpty ||
+        normalizedPassword.isEmpty ||
+        normalizedUsername.contains(RegExp(r"\s"))) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(messageInvalidLoginInput),
+          ),
+        );
+      }
+      return;
+    }
+
+    flow.username = normalizedUsername;
+    flow.password = normalizedPassword;
 
     await doLogin(() => loginClient!.executeLoginFlow(flow));
   }
@@ -160,7 +184,15 @@ class LoginPageState extends State<LoginPage> {
       isServerValid = false;
     });
 
-    var uri = Uri.https(input);
+    final normalized = _normalizeHomeserver(input);
+    if (normalized == null) {
+      setState(() {
+        loadingServerInfo = false;
+      });
+      return;
+    }
+
+    var uri = Uri.https(normalized);
     var result = await loginClient!.setHomeserver(uri);
 
     setState(() {
@@ -168,5 +200,20 @@ class LoginPageState extends State<LoginPage> {
       isServerValid = result.$1;
       loginFlows = result.$2;
     });
+  }
+
+  String? _normalizeHomeserver(String input) {
+    var normalized = input.trim().toLowerCase();
+
+    normalized = normalized.replaceFirst(RegExp(r"^https?://"), "");
+    normalized = normalized.split("/").first;
+
+    if (normalized.isEmpty ||
+        normalized.contains(RegExp(r"\s")) ||
+        !RegExp(r"^[a-z0-9.-]+(?::[0-9]{1,5})?$").hasMatch(normalized)) {
+      return null;
+    }
+
+    return normalized;
   }
 }

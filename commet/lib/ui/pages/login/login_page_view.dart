@@ -305,15 +305,16 @@ class _LoginPageViewState extends State<LoginPageView> {
 
   SizedBox loginButton() {
     var flow = widget.flows?.whereType<PasswordLoginFlow>().firstOrNull;
+    final canSubmit = flow != null && _canSubmitPasswordLogin();
 
     return SizedBox(
       width: double.infinity,
       height: 50,
       child: tiamat.Button(
         text: promptSubmitLogin,
-        onTap: flow != null
+        onTap: canSubmit
             ? () => widget.doPasswordLogin
-                ?.call(flow, _usernameTextField.text, _passwordTextField.text)
+                ?.call(flow!, _usernameTextField.text, _passwordTextField.text)
             : null,
       ),
     );
@@ -325,6 +326,7 @@ class _LoginPageViewState extends State<LoginPageView> {
       controller: _passwordTextField,
       obscureText: true,
       readOnly: widget.isLoggingIn,
+      onChanged: (_) => setState(() {}),
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         labelText: promptPassword,
@@ -337,6 +339,7 @@ class _LoginPageViewState extends State<LoginPageView> {
       autocorrect: false,
       controller: _usernameTextField,
       readOnly: widget.isLoggingIn,
+      onChanged: (_) => setState(() {}),
       inputFormatters: [FilteringTextInputFormatter.deny(RegExp("[ ]"))],
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
@@ -359,6 +362,14 @@ class _LoginPageViewState extends State<LoginPageView> {
           labelText: promptHomeserver,
           suffix: homeserverEntrySuffix()),
     );
+  }
+
+  bool _canSubmitPasswordLogin() {
+    final username = _usernameTextField.text.trim();
+    final password = _passwordTextField.text.trim();
+    return username.isNotEmpty &&
+        password.isNotEmpty &&
+        !username.contains(RegExp(r"\s"));
   }
 
   Widget homeserverEntrySuffix() {
