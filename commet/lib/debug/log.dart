@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:commet/config/build_config.dart';
 import 'package:commet/main.dart';
 import 'package:commet/utils/notifying_list.dart';
 import 'package:commet/utils/text_utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
 
 enum LogType { info, debug, error, warning }
 
@@ -35,6 +37,10 @@ class LogEntryException extends LogEntry {
 class Log {
   static final NotifyingList<LogEntry> log =
       NotifyingList.empty(growable: true);
+  static final RegExp _ansiEscapeRegex = RegExp(r'\x1B\[[0-9;]*m');
+  static File? _logFile;
+  static Future<File?>? _logFileFuture;
+  static bool _failedToLoadLogFile = false;
 
   static String prefix = "";
 
@@ -45,6 +51,48 @@ class Log {
       log.last.count += 1;
     } else {
       log.add(entry);
+    }
+
+    unawaited(_appendToLogFile(entry));
+  }
+
+  static Future<File?> _getLogFile() async {
+    if (_failedToLoadLogFile) return null;
+    if (_logFile != null) return _logFile;
+    if (_logFileFuture != null) return _logFileFuture!;
+
+    _logFileFuture = () async {
+      try {
+        final directory = await getApplicationSupportDirectory();
+        final file = File("${directory.path}/commet.log");
+        if (!await file.exists()) {
+          await file.create(recursive: true);
+        }
+        _logFile = file;
+        return file;
+      } catch (_) {
+        _failedToLoadLogFile = true;
+        return null;
+      }
+    }();
+
+    return _logFileFuture!;
+  }
+
+  static Future<void> _appendToLogFile(LogEntry entry) async {
+    try {
+      final file = await _getLogFile();
+      if (file == null) return;
+
+      final timestamp = entry.time.toUtc().toIso8601String();
+      final sanitized =
+          entry.content.replaceAll(_ansiEscapeRegex, "").replaceAll("\n", "\\n");
+      await file.writeAsString(
+        "[$timestamp] ${entry.type.name.toUpperCase()}: $sanitized\n",
+        mode: FileMode.append,
+      );
+    } catch (_) {
+      // Ignore log file write errors to avoid recursive logging failures.
     }
   }
 
