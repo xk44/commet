@@ -115,7 +115,7 @@ P1 — Matrix onboarding, federation, and “setup isn’t a hobby”
 ## Better MHS onboarding (P1)
 - [ ] Show helpful error when MHS does not exist (GHI #405) https://github.com/commetchat/commet/issues/405
 - [ ] Improve invalid login error UX (GHI #404) https://github.com/commetchat/commet/issues/404
-- [ ] Login screen input validation (no spaces, case rules, etc.) (GHI #117) https://github.com/commetchat/commet/issues/117
+- [x] Login screen input validation (no spaces, case rules, etc.) (GHI #117) https://github.com/commetchat/commet/issues/117
 
 ## “Autodeploy Matrix” (P1) — reduce the Matrix setup pain (your request)
 - [ ] (NEW) Publish “Commet Federation Kit” (CFK): an opinionated, single-command deploy for a production-grade MHS
