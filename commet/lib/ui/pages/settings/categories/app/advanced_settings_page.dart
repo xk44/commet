@@ -15,6 +15,7 @@ class AdvancedSettingsPage extends StatefulWidget {
 class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
   bool developerOptions = false;
   bool stickerCompatibility = false;
+  bool deleteWithoutConfirmation = false;
   String get labelSettingsDeveloperMode => Intl.message("Developer mode",
       desc: "Header for the settings to enable developer mode",
       name: "labelSettingsDeveloperMode");
@@ -33,10 +34,22 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
       desc: "Explains what sticker compatibility mode does",
       name: "labelSettingsStickerCompatibilityExplanation");
 
+  String get labelDeleteWithoutConfirmation =>
+      Intl.message("Delete without confirmation",
+          desc:
+              "Label for the setting that allows deleting timeline messages without showing a confirmation dialog",
+          name: "labelDeleteWithoutConfirmation");
+
+  String get labelDeleteWithoutConfirmationExplanation => Intl.message(
+      "Immediately deletes your own messages when you choose delete",
+      desc: "Explains what the delete without confirmation setting does",
+      name: "labelDeleteWithoutConfirmationExplanation");
+
   @override
   void initState() {
     developerOptions = preferences.developerMode;
     stickerCompatibility = preferences.stickerCompatibilityMode;
+    deleteWithoutConfirmation = preferences.deleteWithoutConfirmation;
     super.initState();
   }
 
@@ -104,6 +117,43 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
                     setState(() {
                       stickerCompatibility =
                           preferences.stickerCompatibilityMode;
+                    });
+                  },
+                )
+              ],
+            )
+          ]),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Panel(
+          header: labelDeleteWithoutConfirmation,
+          mode: TileType.surfaceContainerLow,
+          child: Column(children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      tiamat.Text.labelEmphasised(labelDeleteWithoutConfirmation),
+                      tiamat.Text.labelLow(
+                          labelDeleteWithoutConfirmationExplanation)
+                    ],
+                  ),
+                ),
+                tiamat.Switch(
+                  state: deleteWithoutConfirmation,
+                  onChanged: (value) async {
+                    setState(() {
+                      deleteWithoutConfirmation = value;
+                    });
+                    await preferences.setDeleteWithoutConfirmation(value);
+                    setState(() {
+                      deleteWithoutConfirmation =
+                          preferences.deleteWithoutConfirmation;
                     });
                   },
                 )
