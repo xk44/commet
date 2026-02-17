@@ -44,7 +44,7 @@ class RoomFieldName implements RoomField {
   Widget build(CreateRoomArgs args, Function() onArgsChanged) {
     return TextField(
       onChanged: (value) {
-        args.name = value;
+        args.name = value.trim();
         onArgsChanged();
       },
       decoration: InputDecoration(hint: tiamat.Text.labelLow(promptRoomName)),
@@ -56,7 +56,7 @@ class RoomFieldName implements RoomField {
 
   @override
   bool isValid(CreateRoomArgs args) {
-    return args.name?.isNotEmpty == true;
+    return args.name?.trim().isNotEmpty == true;
   }
 }
 
@@ -72,7 +72,8 @@ class RoomFieldTopic implements RoomField {
   Widget build(CreateRoomArgs args, Function() onArgsChanged) {
     return TextField(
       onChanged: (value) {
-        args.topic = value;
+        final topic = value.trim();
+        args.topic = topic.isNotEmpty ? topic : null;
         onArgsChanged();
       },
       maxLines: 3,

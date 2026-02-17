@@ -512,6 +512,7 @@ class MatrixClient extends Client {
   Future<Space> createSpace(CreateRoomArgs args) async {
     var id = await _matrixClient.createSpace(
       name: args.name,
+      topic: args.topic,
       waitForSync: true,
       visibility: args.visibility == RoomVisibility.private
           ? matrix.Visibility.private
