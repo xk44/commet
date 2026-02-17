@@ -58,6 +58,8 @@ class LinkUtils {
     }
 
     if (!(uri.scheme == "http" || uri.scheme == "https")) {
+      Log.d("Opening non-web link: $uri");
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
       return;
     }
 
@@ -78,7 +80,7 @@ class LinkUtils {
             }
 
             if (confirm == false) {
-              launchUrl(openUrl, mode: LaunchMode.externalApplication);
+              await launchUrl(openUrl, mode: LaunchMode.externalApplication);
             }
 
             return;
@@ -127,6 +129,6 @@ class LinkUtils {
 
     Log.d("Opening Link: $openUrl");
 
-    launchUrl(openUrl, mode: LaunchMode.externalApplication);
+    await launchUrl(openUrl, mode: LaunchMode.externalApplication);
   }
 }
