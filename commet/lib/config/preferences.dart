@@ -84,6 +84,8 @@ class Preferences {
   static const String _runningDonationCheckFlow = "running_donation_check_flow";
 
   static const String _systemHotkey = "system_wide_hotkey";
+  static const String _deleteWithoutConfirmation =
+      "delete_without_confirmation";
 
   final StreamController _onSettingChanged = StreamController.broadcast();
   Stream get onSettingChanged => _onSettingChanged.stream;
@@ -576,6 +578,14 @@ class Preferences {
       await _preferences!.setString(_filterClientId, id);
     }
 
+    _onSettingChanged.add(null);
+  }
+
+  bool get deleteWithoutConfirmation =>
+      _preferences!.getBool(_deleteWithoutConfirmation) ?? false;
+
+  Future<void> setDeleteWithoutConfirmation(bool value) async {
+    await _preferences!.setBool(_deleteWithoutConfirmation, value);
     _onSettingChanged.add(null);
   }
 
