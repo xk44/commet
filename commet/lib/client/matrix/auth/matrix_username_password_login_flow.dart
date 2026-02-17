@@ -35,6 +35,12 @@ class MatrixPasswordLoginFlow implements PasswordLoginFlow {
       } else {
         result = LoginResult.failed;
       }
+    } on matrix.MatrixException catch (error) {
+      if (error.error == matrix.MatrixError.M_FORBIDDEN) {
+        result = LoginResult.failed;
+      } else {
+        result = LoginResult.error;
+      }
     } catch (_) {
       result = LoginResult.error;
     }
