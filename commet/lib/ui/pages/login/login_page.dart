@@ -54,6 +54,7 @@ class LoginPageState extends State<LoginPage> {
   bool loadingServerInfo = false;
   bool isServerValid = false;
   bool isLoggingIn = false;
+  String? homeserverErrorMessage;
 
   @override
   void initState() {
@@ -78,6 +79,7 @@ class LoginPageState extends State<LoginPage> {
           loginFlows = null;
           isServerValid = false;
           loadingServerInfo = true;
+          homeserverErrorMessage = null;
         });
         homeserverUpdateDebouncer.run(() => updateHomeserver(value));
       },
@@ -90,6 +92,7 @@ class LoginPageState extends State<LoginPage> {
       hasPasswordSupport:
           loginFlows?.whereType<PasswordLoginFlow>().isNotEmpty == true,
       isServerValid: isServerValid,
+      homeserverErrorMessage: homeserverErrorMessage,
     );
   }
 
@@ -182,12 +185,14 @@ class LoginPageState extends State<LoginPage> {
       loginFlows = null;
       loadingServerInfo = true;
       isServerValid = false;
+      homeserverErrorMessage = null;
     });
 
     final normalized = _normalizeHomeserver(input);
     if (normalized == null) {
       setState(() {
         loadingServerInfo = false;
+        homeserverErrorMessage = null;
       });
       return;
     }
@@ -199,6 +204,14 @@ class LoginPageState extends State<LoginPage> {
       loadingServerInfo = false;
       isServerValid = result.$1;
       loginFlows = result.$2;
+      homeserverErrorMessage = result.$1
+          ? null
+          : Intl.message(
+              "We couldn't reach that homeserver. Check the address and try again.",
+              name: "messageHomeserverUnreachable",
+              desc:
+                  "Shown when the user enters a homeserver that cannot be reached or does not exist",
+            );
     });
   }
 
