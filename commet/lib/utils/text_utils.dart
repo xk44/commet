@@ -14,6 +14,9 @@ final _urlRegex = RegExp(
   dotAll: true,
 );
 
+final _roomMentionRegex = RegExp(r'(?<![A-Za-z0-9_])@room(?![A-Za-z0-9_])',
+    caseSensitive: false);
+
 enum NewPasswordResult { valid, tooShort, noNumbers, noSymbols, noMixedCase }
 
 class TextUtils {
@@ -51,12 +54,29 @@ class TextUtils {
       {TextStyle? style,
       required BuildContext context,
       required String clientId}) {
-    var matches = _urlRegex.allMatches(text);
+    var combinedRegex = RegExp(
+      '${_urlRegex.pattern}|${_roomMentionRegex.pattern}',
+      caseSensitive: false,
+      dotAll: true,
+    );
+
+    var matches = combinedRegex.allMatches(text);
     return formatMatches(
       matches,
       text,
       style: style,
       builder: (matchedText, theme) {
+        if (_roomMentionRegex.hasMatch(matchedText) &&
+            matchedText.toLowerCase() == '@room') {
+          var mentionStyle = style ?? Theme.of(context).textTheme.bodyMedium;
+          return TextSpan(
+              text: matchedText,
+              style: mentionStyle?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.w700,
+              ));
+        }
+
         return LinkSpan.create(matchedText,
             clientId: clientId,
             context: context,

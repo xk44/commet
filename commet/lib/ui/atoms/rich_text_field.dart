@@ -10,6 +10,7 @@ import 'package:commet/client/room.dart';
 import 'package:commet/main.dart';
 import 'package:commet/ui/atoms/emoji_widget.dart';
 import 'package:commet/ui/atoms/mention.dart';
+import 'package:commet/utils/text_utils.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:markdown/markdown.dart' as md;
@@ -18,6 +19,9 @@ import 'package:tiamat/config/config.dart';
 // ignore: implementation_imports
 import 'package:matrix/src/utils/markdown.dart' as mx_markdown;
 import 'package:matrix/matrix.dart' as matrix;
+
+final _roomMentionRegex =
+    RegExp(r'(?<![A-Za-z0-9_])@room(?![A-Za-z0-9_])', caseSensitive: false);
 
 class RichTextEditingController extends TextEditingController {
   RichTextEditingController({required this.client, this.room, super.text});
@@ -118,10 +122,24 @@ class RichTextEditingController extends TextEditingController {
           style: originalStyle,
         ));
       } else {
-        children.add(TextSpan(
-          text: nodeText,
-          style: originalStyle,
-        ));
+        var mentionMatches = _roomMentionRegex.allMatches(nodeText);
+        if (mentionMatches.isNotEmpty) {
+          children.addAll(TextUtils.formatMatches(mentionMatches, nodeText,
+              style: originalStyle, builder: (matchedText, theme) {
+            return TextSpan(
+              text: matchedText,
+              style: originalStyle.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.w700,
+              ),
+            );
+          }));
+        } else {
+          children.add(TextSpan(
+            text: nodeText,
+            style: originalStyle,
+          ));
+        }
       }
 
       currentIndex += nodeText.length;
