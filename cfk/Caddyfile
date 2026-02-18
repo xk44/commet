@@ -1,0 +1,14 @@
+{$MATRIX_SERVER_NAME} {
+  encode zstd gzip
+
+  @wellknown path /.well-known/*
+  handle @wellknown {
+    root * /srv/well-known
+    file_server
+    header Access-Control-Allow-Origin "*"
+    header Content-Type "application/json"
+  }
+
+  reverse_proxy /_matrix/* synapse:8008
+  reverse_proxy /_synapse/client/* synapse:8008
+}

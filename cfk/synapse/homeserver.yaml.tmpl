@@ -1,0 +1,40 @@
+server_name: "__MATRIX_SERVER_NAME__"
+public_baseurl: "https://__MATRIX_SERVER_NAME__/"
+pid_file: /data/homeserver.pid
+listeners:
+  - port: 8008
+    tls: false
+    type: http
+    x_forwarded: true
+    resources:
+      - names: [client, federation]
+        compress: false
+
+database:
+  name: psycopg2
+  args:
+    user: __POSTGRES_USER__
+    password: __POSTGRES_PASSWORD__
+    database: __POSTGRES_DB__
+    host: postgres
+    cp_min: 5
+    cp_max: 10
+
+log_config: "/data/log.config"
+media_store_path: /data/media_store
+registration_shared_secret: "__REGISTRATION_SHARED_SECRET__"
+report_stats: false
+macaroon_secret_key: "__MACAROON_SECRET_KEY__"
+form_secret: "__FORM_SECRET__"
+signing_key_path: "/data/__MATRIX_SERVER_NAME__.signing.key"
+trusted_key_servers:
+  - server_name: "matrix.org"
+
+enable_registration: false
+allow_public_rooms_without_auth: false
+turn_uris:
+  - "turn:__MATRIX_SERVER_NAME__?transport=udp"
+  - "turn:__MATRIX_SERVER_NAME__?transport=tcp"
+turn_shared_secret: "__TURN_SHARED_SECRET__"
+turn_user_lifetime: 1h
+turn_allow_guests: true

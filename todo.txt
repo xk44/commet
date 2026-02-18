@@ -118,15 +118,15 @@ P1 — Matrix onboarding, federation, and “setup isn’t a hobby”
 - [x] Login screen input validation (no spaces, case rules, etc.) (GHI #117) https://github.com/commetchat/commet/issues/117
 
 ## “Autodeploy Matrix” (P1) — reduce the Matrix setup pain (your request)
-- [ ] (NEW) Publish “Commet Federation Kit” (CFK): an opinionated, single-command deploy for a production-grade MHS
-  - [ ] Provide Docker Compose + docs (Synapse OR Dendrite/Conduit), Postgres, reverse proxy w/ ACME TLS
-  - [ ] Include federation-ready defaults + .well-known templates
-  - [ ] Include TURN (coturn) pre-config for calls/SS
-  - [ ] Provide healthchecks + monitoring hooks (Prometheus/Grafana optional)
-  - [ ] Add a “bring your own domain” wizard script + idempotent upgrades
-  - [ ] Provide “non-federated/simple mode” for people who just want a private server fast
-  - [ ] Provide a “recommended ports + firewall rules” checklist
-  - [ ] Add a “quick troubleshoot” command that bundles sanitized logs
+- [x] (NEW) Publish “Commet Federation Kit” (CFK): an opinionated, single-command deploy for a production-grade MHS
+  - [x] Provide Docker Compose + docs (Synapse OR Dendrite/Conduit), Postgres, reverse proxy w/ ACME TLS
+  - [x] Include federation-ready defaults + .well-known templates
+  - [x] Include TURN (coturn) pre-config for calls/SS
+  - [x] Provide healthchecks + monitoring hooks (Prometheus/Grafana optional)
+  - [x] Add a “bring your own domain” wizard script + idempotent upgrades
+  - [x] Provide “non-federated/simple mode” for people who just want a private server fast
+  - [x] Provide a “recommended ports + firewall rules” checklist
+  - [x] Add a “quick troubleshoot” command that bundles sanitized logs
 
 ===========================================================
 P1/P2 — Platform support, packaging, and distribution

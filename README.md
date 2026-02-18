@@ -70,6 +70,19 @@ Help translate Commet to your language on [Weblate](https://hosted.weblate.org/p
 Commet is built using [Flutter](https://flutter.dev), currently v3.41.1 
 
 This repo currently has a monorepo structure, containing two flutter projects: Commet and Tiamat. Commet is the main client, and Tiamat is a sort of wrapper around Material with some extra goodies, which is used to maintain a consistent style across the app. Tiamat may eventually be moved to its own repo, but for now it is maintained here for ease of development.
+
+## Commet Federation Kit (CFK)
+
+To reduce Matrix homeserver setup friction, this repo now includes a starter deployment kit in [`cfk/`](cfk/). It includes:
+
+- Synapse + Postgres + Caddy (ACME TLS) + coturn
+- `.well-known` templates for federation
+- optional Prometheus/Grafana profile
+- a BYOD setup wizard, idempotent upgrade helper, and troubleshoot bundle script
+- a non-federated/simple mode for quick private deployments
+
+See [`cfk/README.md`](cfk/README.md) for setup and hardening notes.
+
 ## Building
 
 ### 1. [Install Flutter](https://docs.flutter.dev/get-started/install)
