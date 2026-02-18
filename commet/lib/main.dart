@@ -35,6 +35,7 @@ import 'package:commet/utils/window_management.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart' show Locale;
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -217,7 +218,7 @@ Future<void> initGuiRequirements() async {
 
   MediaKit.ensureInitialized();
 
-  var locale = PlatformDispatcher.instance.locale;
+  var locale = App.resolveAppLocale();
 
   Future.wait([
     UnicodeEmojis.load(),
@@ -226,7 +227,7 @@ Future<void> initGuiRequirements() async {
     // initializeMessagesDebug()
   ]);
 
-  Intl.defaultLocale = locale.languageCode;
+  Intl.defaultLocale = locale.toLanguageTag();
 }
 
 /// Initializes gui requirements and launches the gui
@@ -307,6 +308,27 @@ class App extends StatelessWidget {
   final String? initialRoom;
   final String? initialClientId;
 
+  static Locale resolveAppLocale() {
+    var language = preferences.appLanguage;
+    if (language == null || language.isEmpty) {
+      return PlatformDispatcher.instance.locale;
+    }
+
+    if (language.contains('_')) {
+      var split = language.split('_');
+      if (split.length >= 2) {
+        return Locale(split[0], split[1]);
+      }
+    }
+
+    return Locale(language);
+  }
+
+  static Future<void> setAppLocale(String? languageCode) async {
+    await preferences.setAppLanguage(languageCode);
+    Intl.defaultLocale = resolveAppLocale().toLanguageTag();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ThemeChanger(
@@ -323,6 +345,34 @@ class App extends StatelessWidget {
             title: 'Commet',
             theme: theme,
             debugShowCheckedModeBanner: false,
+            locale: resolveAppLocale(),
+            supportedLocales: const [
+              Locale('ar'),
+              Locale('be'),
+              Locale('cs'),
+              Locale('de'),
+              Locale('en'),
+              Locale('es'),
+              Locale('et'),
+              Locale('eu'),
+              Locale('fa'),
+              Locale('fr'),
+              Locale('ja'),
+              Locale('ko'),
+              Locale('nb'),
+              Locale('pl'),
+              Locale('pt'),
+              Locale('pt', 'BR'),
+              Locale('ru'),
+              Locale('ta'),
+              Locale('uk'),
+              Locale('zh'),
+            ],
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
             navigatorKey: navigator,
             builder: (context, child) => Provider<ClientManager>(
               create: (context) => clientManager,

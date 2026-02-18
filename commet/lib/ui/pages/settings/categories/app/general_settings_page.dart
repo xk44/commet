@@ -18,6 +18,7 @@ class GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool enableTenor = false;
   bool enableEncryptedPreview = false;
   bool autoPlayAnimatedMedia = false;
+  String? selectedLanguageCode;
 
   String get labelThirdPartyServicesTitle =>
       Intl.message("Third party services",
@@ -100,8 +101,45 @@ class GeneralSettingsPageState extends State<GeneralSettingsPage> {
     enableTenor = preferences.tenorGifSearchEnabled;
     enableEncryptedPreview = preferences.urlPreviewInE2EEChat;
     autoPlayAnimatedMedia = preferences.autoPlayAnimatedMedia;
+    selectedLanguageCode = preferences.appLanguage;
     super.initState();
   }
+
+  String get labelAppLanguageTitle => Intl.message("Language",
+      desc: "Header for app language setting",
+      name: "labelAppLanguageTitle");
+
+  String get labelAppLanguageDescription => Intl.message(
+      "Choose the display language for Commet. Use System follows your OS language",
+      desc: "Description for app language setting",
+      name: "labelAppLanguageDescription");
+
+  String get labelUseSystemLanguage => Intl.message("Use System",
+      desc: "Option label for using system language",
+      name: "labelUseSystemLanguage");
+
+  static const List<(String, String)> languageOptions = [
+    ("ar", "العربية"),
+    ("be", "Беларуская"),
+    ("cs", "Čeština"),
+    ("de", "Deutsch"),
+    ("en", "English"),
+    ("es", "Español"),
+    ("et", "Eesti"),
+    ("eu", "Euskara"),
+    ("fa", "فارسی"),
+    ("fr", "Français"),
+    ("ja", "日本語"),
+    ("ko", "한국어"),
+    ("nb", "Norsk bokmål"),
+    ("pl", "Polski"),
+    ("pt", "Português"),
+    ("pt_BR", "Português (Brasil)"),
+    ("ru", "Русский"),
+    ("ta", "தமிழ்"),
+    ("uk", "Українська"),
+    ("zh", "中文"),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -145,6 +183,44 @@ class GeneralSettingsPageState extends State<GeneralSettingsPage> {
             if (UpdateChecker.shouldCheckForUpdates)
               CheckForUpdatesSettingWidget(),
           ]),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Panel(
+          header: labelAppLanguageTitle,
+          mode: TileType.surfaceContainerLow,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(child: tiamat.Text.labelLow(labelAppLanguageDescription)),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: tiamat.DropdownSelector<String?>(
+                  items: [null, ...languageOptions.map((x) => x.$1)],
+                  itemBuilder: (item) {
+                    if (item == null) {
+                      return tiamat.Text.label(labelUseSystemLanguage);
+                    }
+
+                    var label = languageOptions
+                        .firstWhere((entry) => entry.$1 == item)
+                        .$2;
+                    return tiamat.Text.label(label);
+                  },
+                  value: selectedLanguageCode,
+                  onItemSelected: (item) async {
+                    await App.setAppLocale(item);
+                    if (context.mounted) {
+                      setState(() {
+                        selectedLanguageCode = preferences.appLanguage;
+                      });
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
         const SizedBox(
           height: 10,
