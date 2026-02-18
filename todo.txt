@@ -74,7 +74,7 @@ P1 — Messaging UX, search, and productivity (DP)
 ## DM / navigation / reading state (P1)
 - [ ] Start new DMs with user search / username input (GHI #691) https://github.com/commetchat/commet/issues/691
 - [ ] Ability to mark a message as last read (GHI #671) https://github.com/commetchat/commet/issues/671
-- [ ] Allow searching for rooms (GHI #131) https://github.com/commetchat/commet/issues/131
+- [x] Allow searching for rooms (GHI #131) https://github.com/commetchat/commet/issues/131
 
 ## Input / message controls (P1)
 - [x] Up arrow to edit last message (GHI #600) https://github.com/commetchat/commet/issues/600
