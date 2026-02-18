@@ -88,6 +88,7 @@ class Preferences {
   static const String _systemHotkey = "system_wide_hotkey";
   static const String _deleteWithoutConfirmation =
       "delete_without_confirmation";
+  static const String _appLanguage = "app_language";
 
   final StreamController _onSettingChanged = StreamController.broadcast();
   Stream get onSettingChanged => _onSettingChanged.stream;
@@ -596,6 +597,17 @@ class Preferences {
 
   Future<void> setDeleteWithoutConfirmation(bool value) async {
     await _preferences!.setBool(_deleteWithoutConfirmation, value);
+    _onSettingChanged.add(null);
+  }
+
+  String? get appLanguage => _preferences?.getString(_appLanguage);
+
+  Future<void> setAppLanguage(String? value) async {
+    if (value == null || value.isEmpty) {
+      await _preferences!.remove(_appLanguage);
+    } else {
+      await _preferences!.setString(_appLanguage, value);
+    }
     _onSettingChanged.add(null);
   }
 
