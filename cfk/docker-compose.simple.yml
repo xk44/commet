@@ -1,0 +1,8 @@
+services:
+  synapse:
+    ports:
+      - "127.0.0.1:8008:8008"
+  caddy:
+    ports: []
+  coturn:
+    profiles: ["disabled"]
