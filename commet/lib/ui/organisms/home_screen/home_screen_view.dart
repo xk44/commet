@@ -12,7 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:tiamat/tiamat.dart';
 import 'package:tiamat/tiamat.dart' as tiamat;
 
-class HomeScreenView extends StatelessWidget {
+class HomeScreenView extends StatefulWidget {
   final ClientManager clientManager;
   final List<Room>? rooms;
   final List<Room>? recentActivity;
@@ -35,6 +35,13 @@ class HomeScreenView extends StatelessWidget {
       this.createRoom,
       this.invitations});
 
+  @override
+  State<HomeScreenView> createState() => _HomeScreenViewState();
+}
+
+class _HomeScreenViewState extends State<HomeScreenView> {
+  String roomSearchQuery = "";
+
   String get labelHomeRecentActivity => Intl.message("Recent Activity",
       name: "labelHomeRecentActivity",
       desc: "Short label for header of recent room activity");
@@ -49,28 +56,48 @@ class HomeScreenView extends StatelessWidget {
       name: "labelHomeInvitations",
       desc: "Short label for header of invitations list");
 
+  String get promptSearchRooms => Intl.message("Search rooms",
+      name: "promptSearchRooms",
+      desc: "Prompt in the home screen room search input");
+
+  List<Room> _filterRooms(List<Room>? source) {
+    if (source == null) return List.empty();
+
+    final query = roomSearchQuery.trim().toLowerCase();
+    if (query.isEmpty) return source;
+
+    return source.where((room) {
+      final displayName = room.displayName.toLowerCase();
+      final identifier = room.identifier.toLowerCase();
+      return displayName.contains(query) || identifier.contains(query);
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final filteredRecentActivity = _filterRooms(widget.recentActivity);
+    final filteredRooms = _filterRooms(widget.rooms);
+
     return Column(
       children: [
-        if (clientManager.alertManager.alerts.isNotEmpty)
+        if (widget.clientManager.alertManager.alerts.isNotEmpty)
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
             child: alerts(),
           ),
-        if (invitations?.isNotEmpty == true)
+        if (widget.invitations?.isNotEmpty == true)
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
             child: invitationsList(),
           ),
-        if (recentActivity?.isNotEmpty == true)
+        if (filteredRecentActivity.isNotEmpty)
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
-            child: recentRooms(),
+            child: recentRooms(filteredRecentActivity),
           ),
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
-          child: roomsList(context),
+          child: roomsList(context, filteredRooms),
         )
       ],
     );
@@ -83,7 +110,7 @@ class HomeScreenView extends StatelessWidget {
         child: ImplicitlyAnimatedList(
           padding: EdgeInsetsGeometry.zero,
           shrinkWrap: true,
-          itemData: clientManager.alertManager.alerts,
+          itemData: widget.clientManager.alertManager.alerts,
           initialAnimation: false,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, alert) {
@@ -92,14 +119,14 @@ class HomeScreenView extends StatelessWidget {
         ));
   }
 
-  Widget recentRooms() {
+  Widget recentRooms(List<Room> recentRooms) {
     return Panel(
         mode: TileType.surface,
         header: labelHomeRecentActivity,
         child: ImplicitlyAnimatedList(
           shrinkWrap: true,
           padding: EdgeInsetsGeometry.zero,
-          itemData: recentActivity!,
+          itemData: recentRooms,
           initialAnimation: false,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, room) {
@@ -116,8 +143,8 @@ class HomeScreenView extends StatelessWidget {
               recentEventSenderColor: room.lastEvent != null
                   ? room.getColorOfUser(room.lastEvent!.senderId)
                   : null,
-              onTap: () => onRoomClicked?.call(room),
-              showUserAvatar: clientManager.rooms
+              onTap: () => widget.onRoomClicked?.call(room),
+              showUserAvatar: widget.clientManager.rooms
                       .where((element) => element.identifier == room.identifier)
                       .length >
                   1,
@@ -129,19 +156,34 @@ class HomeScreenView extends StatelessWidget {
         ));
   }
 
-  Widget roomsList(BuildContext context) {
+  Widget roomsList(BuildContext context, List<Room> rooms) {
     return Panel(
         mode: TileType.surface,
         header: labelHomeRoomsList,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  isDense: true,
+                  prefixIcon: const Icon(Icons.search),
+                  hintText: promptSearchRooms,
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    roomSearchQuery = value;
+                  });
+                },
+              ),
+            ),
             ImplicitlyAnimatedList(
               padding: EdgeInsetsGeometry.zero,
               physics: const NeverScrollableScrollPhysics(),
               initialAnimation: false,
               shrinkWrap: true,
-              itemData: rooms!,
+              itemData: rooms,
               itemBuilder: (context, room) {
                 return RoomPanel(
                   displayName: room.displayName,
@@ -156,8 +198,8 @@ class HomeScreenView extends StatelessWidget {
                   recentEventSenderColor: room.lastEvent != null
                       ? room.getColorOfUser(room.lastEvent!.senderId)
                       : null,
-                  onTap: () => onRoomClicked?.call(room),
-                  showUserAvatar: clientManager.rooms
+                  onTap: () => widget.onRoomClicked?.call(room),
+                  showUserAvatar: widget.clientManager.rooms
                           .where((element) =>
                               element.identifier == room.identifier)
                           .length >
@@ -186,12 +228,12 @@ class HomeScreenView extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           initialAnimation: false,
           shrinkWrap: true,
-          itemData: invitations!,
+          itemData: widget.invitations!,
           itemBuilder: (context, invitation) {
             return InvitationDisplay(
               invitation,
-              acceptInvitation: acceptInvite,
-              rejectInvitation: rejectInvite,
+              acceptInvitation: widget.acceptInvite,
+              rejectInvitation: widget.rejectInvite,
             );
           },
         ));
