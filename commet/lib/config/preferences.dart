@@ -49,6 +49,8 @@ class Preferences {
   static const String _previewMediaInPrivateRooms =
       "preview_media_in_private_rooms";
 
+  static const String _autoPlayAnimatedMedia = "auto_play_animated_media";
+
   static const String _optedInExperiments = "opted_in_experiments";
 
   static const String _showMediaInNotifications = "show_media_in_notifications";
@@ -368,6 +370,14 @@ class Preferences {
 
   Future<void> setMediaPreviewInPrivateRooms(bool value) async {
     await _preferences!.setBool(_previewMediaInPrivateRooms, value);
+    _onSettingChanged.add(null);
+  }
+
+  bool get autoPlayAnimatedMedia =>
+      _preferences!.getBool(_autoPlayAnimatedMedia) ?? true;
+
+  Future<void> setAutoPlayAnimatedMedia(bool value) async {
+    await _preferences!.setBool(_autoPlayAnimatedMedia, value);
     _onSettingChanged.add(null);
   }
 

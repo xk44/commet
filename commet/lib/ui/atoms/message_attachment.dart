@@ -1,5 +1,6 @@
 import 'package:commet/client/attachment.dart';
 import 'package:commet/config/build_config.dart';
+import 'package:commet/main.dart';
 import 'package:commet/ui/atoms/lightbox.dart';
 import 'package:commet/ui/molecules/audio_player/audio_player.dart';
 import 'package:commet/ui/molecules/video_player/video_player.dart';
@@ -62,6 +63,9 @@ class _MessageAttachmentState extends State<MessageAttachment> {
     assert(widget.attachment is ImageAttachment);
     var attachment = widget.attachment as ImageAttachment;
 
+    final shouldAnimate =
+        preferences.autoPlayAnimatedMedia || attachment.mimeType != "image/gif";
+
     return IgnorePointer(
       ignoring: widget.ignorePointer,
       child: ClipRRect(
@@ -86,6 +90,18 @@ class _MessageAttachmentState extends State<MessageAttachment> {
                                 attachment.height != null
                             ? BoxFit.fill
                             : BoxFit.fitWidth,
+                        gaplessPlayback: true,
+                        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                          if (shouldAnimate || wasSynchronouslyLoaded || frame != null) {
+                            return child;
+                          }
+
+                          return Container(
+                            color: Theme.of(context).colorScheme.surfaceContainerLow,
+                            alignment: Alignment.center,
+                            child: const Icon(Icons.gif_box_outlined),
+                          );
+                        },
                       ),
                     ),
                   ),

@@ -83,7 +83,7 @@ P1 — Messaging UX, search, and productivity (DP)
 - [ ] Collapse membership/state spam in rooms (GHI #598) https://github.com/commetchat/commet/issues/598
 - [ ] Fix duplicate DM entries after room upgrades (GHI #597) https://github.com/commetchat/commet/issues/597
 - [ ] Allow custom state events (GHI #589) https://github.com/commetchat/commet/issues/589
-- [ ] Disable auto-playing animated media (GHI #588) https://github.com/commetchat/commet/issues/588
+- [x] Disable auto-playing animated media (GHI #588) https://github.com/commetchat/commet/issues/588
 - [x] Fix .svg profile picture not showing (GHI #576) https://github.com/commetchat/commet/issues/576
 
 ## Polls (P1)
