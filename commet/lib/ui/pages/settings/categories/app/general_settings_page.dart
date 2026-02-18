@@ -17,6 +17,7 @@ class GeneralSettingsPage extends StatefulWidget {
 class GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool enableTenor = false;
   bool enableEncryptedPreview = false;
+  bool autoPlayAnimatedMedia = false;
 
   String get labelThirdPartyServicesTitle =>
       Intl.message("Third party services",
@@ -59,6 +60,17 @@ class GeneralSettingsPageState extends State<GeneralSettingsPage> {
       desc: "Header for the settings tile for for media preview toggles",
       name: "labelMediaPreviewSettingsTitle");
 
+  String get labelAutoPlayAnimatedMediaToggle => Intl.message(
+      "Auto-play animated media",
+      desc:
+          "Label for the toggle controlling auto-play of animated media in timeline previews",
+      name: "labelAutoPlayAnimatedMediaToggle");
+
+  String get labelAutoPlayAnimatedMediaDescription => Intl.message(
+      "Automatically play animated images (such as GIFs) in message previews",
+      desc: "Description for the auto-play animated media toggle",
+      name: "labelAutoPlayAnimatedMediaDescription");
+
   String get labelMediaPreviewPrivateRoomsToggle => Intl.message(
         "Private Rooms",
         desc:
@@ -87,6 +99,7 @@ class GeneralSettingsPageState extends State<GeneralSettingsPage> {
   void initState() {
     enableTenor = preferences.tenorGifSearchEnabled;
     enableEncryptedPreview = preferences.urlPreviewInE2EEChat;
+    autoPlayAnimatedMedia = preferences.autoPlayAnimatedMedia;
     super.initState();
   }
 
@@ -174,6 +187,20 @@ class GeneralSettingsPageState extends State<GeneralSettingsPage> {
               onChanged: (value) async {
                 await preferences.setMediaPreviewInPublicRooms(value);
                 setState(() {});
+              },
+            ),
+            settingToggle(
+              autoPlayAnimatedMedia,
+              title: labelAutoPlayAnimatedMediaToggle,
+              description: labelAutoPlayAnimatedMediaDescription,
+              onChanged: (value) async {
+                setState(() {
+                  autoPlayAnimatedMedia = value;
+                });
+                await preferences.setAutoPlayAnimatedMedia(value);
+                setState(() {
+                  autoPlayAnimatedMedia = preferences.autoPlayAnimatedMedia;
+                });
               },
             ),
           ]),
