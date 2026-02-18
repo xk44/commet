@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:commet/utils/image_utils.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 enum LODImageType {
   blurhash,
@@ -165,6 +167,7 @@ class LODImageCompleter extends ImageStreamCompleter {
       if (bytes == null) return;
 
       mimeType = Mime.lookupType("", data: bytes);
+      bytes = await _rasterizeSvgIfNeeded(bytes, thumbnailHeight);
 
       var codec = await callback(
         await ImmutableBuffer.fromUint8List(bytes),
@@ -206,6 +209,7 @@ class LODImageCompleter extends ImageStreamCompleter {
       if (bytes == null) return;
 
       mimeType = Mime.lookupType("", data: bytes);
+      bytes = await _rasterizeSvgIfNeeded(bytes, fullResHeight);
       var codec = await callback(
         await ImmutableBuffer.fromUint8List(bytes),
         getTargetSize: (intrinsicWidth, intrinsicHeight) {
@@ -218,6 +222,42 @@ class LODImageCompleter extends ImageStreamCompleter {
 
     await fullResLoading;
     fullResLoading = null;
+  }
+
+  Future<Uint8List> _rasterizeSvgIfNeeded(
+      Uint8List bytes, int? targetHeight) async {
+    if (mimeType != "image/svg+xml") {
+      return bytes;
+    }
+
+    final pictureInfo = await vg.loadPicture(SvgBytesLoader(bytes), null);
+    final sourceWidth = pictureInfo.size.width;
+    final sourceHeight = pictureInfo.size.height;
+
+    final outputHeight = targetHeight?.toDouble();
+    final width = outputHeight != null &&
+            sourceWidth.isFinite &&
+            sourceHeight.isFinite &&
+            sourceWidth > 0 &&
+            sourceHeight > 0
+        ? ((outputHeight / sourceHeight) * sourceWidth).round()
+        : (sourceWidth.isFinite && sourceWidth > 0 ? sourceWidth.round() : 96);
+    final height = outputHeight != null
+        ? outputHeight.round()
+        : (sourceHeight.isFinite && sourceHeight > 0
+            ? sourceHeight.round()
+            : 96);
+
+    final image = await pictureInfo.picture.toImage(width, height);
+    final png = await image.toByteData(format: ImageByteFormat.png);
+    pictureInfo.picture.dispose();
+    image.dispose();
+
+    if (png == null) {
+      return bytes;
+    }
+
+    return png.buffer.asUint8List();
   }
 
   Future<void> _setCodec(LODImageType type, Codec codec) async {
