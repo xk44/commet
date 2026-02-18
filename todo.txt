@@ -151,7 +151,7 @@ P1/P2 — Platform support, packaging, and distribution
 - [ ] Minimize to tray (GHI #72) https://github.com/commetchat/commet/issues/72
 - [ ] Use native titlebar on Linux (GHI #392) https://github.com/commetchat/commet/issues/392
 - [x] Store logs to file (GHI #389) https://github.com/commetchat/commet/issues/389
-- [ ] PWA icon dark variant (Chromebooks) (GHI #398) https://github.com/commetchat/commet/issues/398
+- [x] PWA icon dark variant (Chromebooks) (GHI #398) https://github.com/commetchat/commet/issues/398
 
 ===========================================================
 P2 — Accessibility, notifications tuning, and calendar
