@@ -21,6 +21,8 @@ class Lightbox extends StatefulWidget {
     this.contentKey,
     this.customWidget,
     this.videoController,
+    this.onNavigateLeft,
+    this.onNavigateRight,
     super.key,
   });
   final ImageProvider? image;
@@ -30,6 +32,8 @@ class Lightbox extends StatefulWidget {
   final Widget? customWidget;
   final double? aspectRatio;
   final Key? contentKey;
+  final VoidCallback? onNavigateLeft;
+  final VoidCallback? onNavigateRight;
 
   @override
   State<Lightbox> createState() => _LightboxState();
@@ -42,6 +46,8 @@ class Lightbox extends StatefulWidget {
     Widget? customWidget,
     VideoPlayerController? videoController,
     double? aspectRatio,
+    VoidCallback? onNavigateLeft,
+    VoidCallback? onNavigateRight,
     Key? key,
   }) {
     return showGeneralDialog(
@@ -56,6 +62,8 @@ class Lightbox extends StatefulWidget {
             videoController: videoController,
             aspectRatio: aspectRatio,
             thumbnail: thumbnail,
+            onNavigateLeft: onNavigateLeft,
+            onNavigateRight: onNavigateRight,
             contentKey: key,
             customWidget: customWidget,
             key: GlobalKey(),
@@ -164,17 +172,43 @@ class _LightboxState extends State<Lightbox> {
     Navigator.pop(context, widget.contentKey);
   }
 
+  void navigateLeft() {
+    widget.onNavigateLeft?.call();
+  }
+
+  void navigateRight() {
+    widget.onNavigateRight?.call();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Shortcuts(
       shortcuts: {
         const SingleActivator(LogicalKeyboardKey.escape): const DismissIntent(),
+        if (widget.image != null && widget.onNavigateLeft != null)
+          const SingleActivator(LogicalKeyboardKey.arrowLeft):
+              const NavigateLeftIntent(),
+        if (widget.image != null && widget.onNavigateRight != null)
+          const SingleActivator(LogicalKeyboardKey.arrowRight):
+              const NavigateRightIntent(),
       },
       child: Actions(
         actions: {
           DismissIntent: CallbackAction<DismissIntent>(
             onInvoke: (_) {
               dismiss();
+              return null;
+            },
+          ),
+          NavigateLeftIntent: CallbackAction<NavigateLeftIntent>(
+            onInvoke: (_) {
+              navigateLeft();
+              return null;
+            },
+          ),
+          NavigateRightIntent: CallbackAction<NavigateRightIntent>(
+            onInvoke: (_) {
+              navigateRight();
               return null;
             },
           ),
@@ -287,4 +321,13 @@ class _LightboxState extends State<Lightbox> {
       ),
     );
   }
+}
+
+
+class NavigateLeftIntent extends Intent {
+  const NavigateLeftIntent();
+}
+
+class NavigateRightIntent extends Intent {
+  const NavigateRightIntent();
 }

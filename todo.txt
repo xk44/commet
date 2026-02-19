@@ -174,5 +174,5 @@ P2 — Accessibility, notifications tuning, and calendar
 - [ ] Calendar-integrated availability / ready-up system (GHI #626) https://github.com/commetchat/commet/issues/626
 - [ ] Incorporate Linux Flatpak feedback (GHI #632) https://github.com/commetchat/commet/issues/632
   - [x] Allow dismissing image lightbox with Escape
-  - [ ] Add left/right arrow navigation when viewing images
+  - [x] Add left/right arrow navigation when viewing images
   - [ ] Investigate and fix reported device-verification UX gaps on Linux/Flatpak

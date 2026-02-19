@@ -161,6 +161,47 @@ class _PhotoAlbumViewState extends State<PhotoAlbumView> {
     );
   }
 
+
+  int getAttachmentIndex(String id) {
+    return timeline?.photos.indexWhere((photo) => photo.id == id) ?? -1;
+  }
+
+  void openPhotoLightbox(int index) {
+    final photos = timeline?.photos;
+    if (photos == null || index < 0 || index >= photos.length) return;
+
+    final current = photos[index];
+    final attachment = current.attachment;
+    if (attachment is! ImageAttachment) return;
+
+    final previousIndex =
+        index > 0 && photos[index - 1].attachment is ImageAttachment
+            ? index - 1
+            : -1;
+    final nextIndex =
+        index < photos.length - 1 && photos[index + 1].attachment is ImageAttachment
+            ? index + 1
+            : -1;
+
+    Lightbox.show(
+      context,
+      image: attachment.image,
+      onNavigateLeft:
+          previousIndex == -1 ? null : () => navigateToPhoto(previousIndex),
+      onNavigateRight:
+          nextIndex == -1 ? null : () => navigateToPhoto(nextIndex),
+    );
+  }
+
+  void navigateToPhoto(int index) {
+    Navigator.of(context).pop();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        openPhotoLightbox(index);
+      }
+    });
+  }
+
   Widget buildAttachment(Photo item) {
     var width = 500.0;
     var height = 500.0;
@@ -231,7 +272,7 @@ class _PhotoAlbumViewState extends State<PhotoAlbumView> {
             color: Colors.transparent,
             child: InkWell(
               onTap: () {
-                Lightbox.show(context, image: attachment.image);
+                openPhotoLightbox(getAttachmentIndex(item.id));
               },
               onLongPress: callback,
             ),
