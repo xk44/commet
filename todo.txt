@@ -173,3 +173,6 @@ P2 — Accessibility, notifications tuning, and calendar
 - [x] Fix all-day events saved one day off when updating (GHI #633) https://github.com/commetchat/commet/issues/633
 - [ ] Calendar-integrated availability / ready-up system (GHI #626) https://github.com/commetchat/commet/issues/626
 - [ ] Incorporate Linux Flatpak feedback (GHI #632) https://github.com/commetchat/commet/issues/632
+  - [x] Allow dismissing image lightbox with Escape
+  - [ ] Add left/right arrow navigation when viewing images
+  - [ ] Investigate and fix reported device-verification UX gaps on Linux/Flatpak
