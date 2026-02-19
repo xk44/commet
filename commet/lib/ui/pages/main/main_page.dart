@@ -4,6 +4,7 @@ import 'package:commet/client/client.dart';
 import 'package:commet/client/client_manager.dart';
 import 'package:commet/client/components/direct_messages/direct_message_component.dart';
 import 'package:commet/client/components/donation_awards/donation_awards_component.dart';
+import 'package:commet/client/components/invitation/invitation_component.dart';
 import 'package:commet/client/components/profile/profile_component.dart';
 import 'package:commet/client/components/voip/voip_component.dart';
 import 'package:commet/client/components/voip/voip_session.dart';
@@ -12,6 +13,7 @@ import 'package:commet/config/layout_config.dart';
 import 'package:commet/debug/log.dart';
 import 'package:commet/main.dart';
 import 'package:commet/ui/navigation/adaptive_dialog.dart';
+import 'package:commet/ui/molecules/profile/mini_profile_view.dart';
 import 'package:commet/ui/organisms/user_profile/user_profile.dart';
 import 'package:commet/ui/pages/get_or_create_room/get_or_create_room.dart';
 import 'package:commet/ui/pages/settings/donation_rewards_confirmation.dart';
@@ -23,6 +25,7 @@ import 'package:commet/ui/pages/main/main_page_view_mobile.dart';
 import 'package:commet/ui/pages/settings/room_settings_page.dart';
 import 'package:commet/utils/first_time_setup.dart';
 import 'package:commet/utils/image/lod_image.dart';
+import 'package:commet/utils/debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -289,12 +292,7 @@ class MainPageState extends State<MainPage> {
       return;
     }
 
-    final rawInput = await AdaptiveDialog.textPrompt(
-      context,
-      title: "Start Direct Message",
-      submitText: "Start",
-      hintText: "@alice:matrix.org or alice",
-    );
+    final rawInput = await _promptDirectMessageTarget(context, selectedClient);
 
     if (rawInput == null || !context.mounted) {
       return;
@@ -346,6 +344,28 @@ class MainPageState extends State<MainPage> {
         );
       }
     }
+  }
+
+  Future<String?> _promptDirectMessageTarget(
+      BuildContext context, Client selectedClient) async {
+    final invitationComponent = selectedClient.getComponent<InvitationComponent>();
+
+    if (invitationComponent == null) {
+      return AdaptiveDialog.textPrompt(
+        context,
+        title: "Start Direct Message",
+        submitText: "Start",
+        hintText: "@alice:matrix.org or alice",
+      );
+    }
+
+    return showDialog<String>(
+      context: context,
+      builder: (context) => _DirectMessageTargetPicker(
+        client: selectedClient,
+        invitationComponent: invitationComponent,
+      ),
+    );
   }
 
   String? normalizeDirectMessageTarget(String input, Client client) {
@@ -491,5 +511,119 @@ class MainPageState extends State<MainPage> {
         }
       }
     }
+  }
+}
+
+class _DirectMessageTargetPicker extends StatefulWidget {
+  const _DirectMessageTargetPicker({
+    required this.client,
+    required this.invitationComponent,
+  });
+
+  final Client client;
+  final InvitationComponent invitationComponent;
+
+  @override
+  State<_DirectMessageTargetPicker> createState() =>
+      _DirectMessageTargetPickerState();
+}
+
+class _DirectMessageTargetPickerState extends State<_DirectMessageTargetPicker> {
+  late final TextEditingController _controller;
+  late final Debouncer _debouncer;
+  bool _isSearching = false;
+  List<Profile> _searchResults = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+    _debouncer = Debouncer(delay: const Duration(milliseconds: 300));
+  }
+
+  @override
+  void dispose() {
+    _debouncer.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onQueryChanged(String value) {
+    setState(() {
+      _isSearching = value.isNotEmpty;
+      _searchResults = [];
+      _debouncer.cancel();
+    });
+
+    if (value.isEmpty) {
+      return;
+    }
+
+    _debouncer.run(() => _search(value));
+  }
+
+  Future<void> _search(String value) async {
+    final result = await widget.invitationComponent.searchUsers(value);
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _isSearching = false;
+      _searchResults = result;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text("Start Direct Message"),
+      content: SizedBox(
+        width: 500,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: _controller,
+              autofocus: true,
+              onChanged: _onQueryChanged,
+              decoration: const InputDecoration(
+                hintText: "@alice:matrix.org or alice",
+                prefixIcon: Icon(Icons.search),
+              ),
+            ),
+            const SizedBox(height: 12),
+            if (_isSearching) const CircularProgressIndicator(),
+            if (!_isSearching && _searchResults.isNotEmpty)
+              SizedBox(
+                height: 280,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _searchResults.length,
+                  itemBuilder: (context, index) {
+                    final profile = _searchResults[index];
+                    return MiniProfileView(
+                      client: widget.client,
+                      userId: profile.identifier,
+                      initialProfile: profile,
+                      onTap: () => Navigator.pop(context, profile.identifier),
+                    );
+                  },
+                ),
+              ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text("Cancel"),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.pop(context, _controller.text),
+          child: const Text("Start"),
+        ),
+      ],
+    );
   }
 }
