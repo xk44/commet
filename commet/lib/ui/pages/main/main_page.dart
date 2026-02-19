@@ -279,6 +279,105 @@ class MainPageState extends State<MainPage> {
     });
   }
 
+  Future<void> startDirectMessage(BuildContext context) async {
+    var selectedClient = filterClient;
+    if (selectedClient == null) {
+      selectedClient = await AdaptiveDialog.pickClient(context);
+    }
+
+    if (selectedClient == null || !context.mounted) {
+      return;
+    }
+
+    final rawInput = await AdaptiveDialog.textPrompt(
+      context,
+      title: "Start Direct Message",
+      submitText: "Start",
+      hintText: "@alice:matrix.org or alice",
+    );
+
+    if (rawInput == null || !context.mounted) {
+      return;
+    }
+
+    final userId = normalizeDirectMessageTarget(rawInput, selectedClient);
+    if (userId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Enter a valid Matrix user ID or username"),
+        ),
+      );
+      return;
+    }
+
+    final component = selectedClient.getComponent<DirectMessagesComponent>();
+    if (component == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Direct messages are unavailable for this account"),
+        ),
+      );
+      return;
+    }
+
+    try {
+      final room = await component.createDirectMessage(userId);
+      if (!context.mounted) {
+        return;
+      }
+
+      if (room == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Could not start a direct message with that user"),
+          ),
+        );
+        return;
+      }
+
+      selectHome();
+      selectRoom(room);
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Failed to start direct message"),
+          ),
+        );
+      }
+    }
+  }
+
+  String? normalizeDirectMessageTarget(String input, Client client) {
+    final cleaned = input.trim();
+    if (cleaned.isEmpty || cleaned.contains(" ")) {
+      return null;
+    }
+
+    final selfId = client.self?.identifier;
+    final selfDomain = selfId?.split(":").skip(1).join(":");
+    final hasSigil = cleaned.startsWith("@");
+    final hasDomain = cleaned.contains(":");
+
+    if (hasSigil && hasDomain) {
+      return cleaned;
+    }
+
+    if (hasSigil && !hasDomain && selfDomain != null && selfDomain.isNotEmpty) {
+      return "$cleaned:$selfDomain";
+    }
+
+    if (!hasSigil && hasDomain) {
+      return "@$cleaned";
+    }
+
+    if (!hasSigil && !hasDomain && selfDomain != null && selfDomain.isNotEmpty) {
+      return "@$cleaned:$selfDomain";
+    }
+
+    return null;
+  }
+
   void onOpenRoomSignal((String, String?) strings) async {
     var roomId = strings.$1;
     var clientId = strings.$2;

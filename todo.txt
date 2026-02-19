@@ -73,6 +73,8 @@ P1 — Messaging UX, search, and productivity (DP)
 
 ## DM / navigation / reading state (P1)
 - [ ] Start new DMs with user search / username input (GHI #691) https://github.com/commetchat/commet/issues/691
+  - [x] Added username/user-id input flow from DM list (opens/creates DM)
+  - [ ] Deferred: user directory search/picker UI (not yet implemented)
 - [ ] Ability to mark a message as last read (GHI #671) https://github.com/commetchat/commet/issues/671
 - [x] Allow searching for rooms (GHI #131) https://github.com/commetchat/commet/issues/131
 

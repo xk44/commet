@@ -366,6 +366,8 @@ class _MainPageViewMobileState extends State<MainPageViewMobile> {
                         );
                       });
                     },
+                    onCreateDirectMessage: () =>
+                        widget.state.startDirectMessage(context),
                   ),
                 ),
               ],
