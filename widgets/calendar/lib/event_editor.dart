@@ -60,7 +60,7 @@ class _CalendarEventEditorState extends State<CalendarEventEditor> {
       ? DateTime(
           pickedStartDate.year,
           pickedStartDate.month,
-          pickedEndDate.day,
+          pickedStartDate.day,
         )
       : DateTime(
           pickedStartDate.year,
