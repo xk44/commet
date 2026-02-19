@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Commet
-Exec=/usr/lib/chat.commet.commetapp/commet %U
+Exec=commet %U
 Terminal=false
 Type=Application
 Icon=commet-desktop
