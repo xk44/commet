@@ -236,8 +236,23 @@ jobs:
   
     strategy:
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04]
-    runs-on: ${{ matrix.os }}
+        include:
+          - os: ubuntu-22.04
+            runner: ubuntu-22.04
+            arch: amd64
+            flutter_bundle: x64
+            output_name: commet-ubuntu-22.04-x64.deb
+          - os: ubuntu-24.04
+            runner: ubuntu-24.04
+            arch: amd64
+            flutter_bundle: x64
+            output_name: commet-ubuntu-24.04-x64.deb
+          - os: ubuntu-24.04
+            runner: ubuntu-24.04-arm
+            arch: arm64
+            flutter_bundle: arm64
+            output_name: commet-ubuntu-24.04-arm64.deb
+    runs-on: ${{ matrix.runner }}
     steps:
       # we were having issues running out of disk space on workers, so...
       - name: Aggressive cleanup
@@ -295,14 +310,14 @@ jobs:
 
       - name: Create Package
         run: | 
-          mv $PROJECT_PATH/linux/debian/DEBIAN/control-${{ matrix.os }} $PROJECT_PATH/linux/debian/DEBIAN/control
+          mv $PROJECT_PATH/linux/debian/DEBIAN/control-${{ matrix.os }}-${{ matrix.arch }} $PROJECT_PATH/linux/debian/DEBIAN/control
           cp -r $PROJECT_PATH/linux/debian ./commet-pkg
-          cp -r $PROJECT_PATH/build/linux/x64/release/bundle ./commet-pkg/usr/lib/chat.commet.commetapp
+          cp -r $PROJECT_PATH/build/linux/${{ matrix.flutter_bundle }}/release/bundle ./commet-pkg/usr/lib/chat.commet.commetapp
           version=$(echo ${{ github.event.release.tag_name || 'v0.0.0-artifact' }} | grep -oP '[0-9]+([.][0-9]+)+')
           echo $version
           cd ./commet-pkg
           sed -i "s/{{VERSION_TAG}}/$version/g" ./DEBIAN/control
-          dpkg-deb --build ./ commet-linux-x64.deb
+          dpkg-deb --build ./ ${{ matrix.output_name }}
       
       - name: Upload to release
         if: github.event_name == 'release'
@@ -311,16 +326,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: commet-pkg/commet-linux-x64.deb
-          asset_name: commet-${{ matrix.os }}-x64.deb
+          asset_path: commet-pkg/${{ matrix.output_name }}
+          asset_name: ${{ matrix.output_name }}
           asset_content_type: application/vnd.debian.binary-package
 
       - name: Upload Artifact
         if: github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
-          name: commet-${{ matrix.os }}-x64.deb
-          path: commet-pkg/commet-linux-x64.deb
+          name: ${{ matrix.output_name }}
+          path: commet-pkg/${{ matrix.output_name }}
 
   release-linux-flatpak:
     runs-on: ubuntu-latest
