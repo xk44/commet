@@ -71,6 +71,17 @@ Commet is built using [Flutter](https://flutter.dev), currently v3.41.1
 
 This repo currently has a monorepo structure, containing two flutter projects: Commet and Tiamat. Commet is the main client, and Tiamat is a sort of wrapper around Material with some extra goodies, which is used to maintain a consistent style across the app. Tiamat may eventually be moved to its own repo, but for now it is maintained here for ease of development.
 
+## Running the web client in Docker
+
+A minimal container image is available for the Flutter web build in [`commet/docker/`](commet/docker/).
+
+```bash
+docker build -f commet/docker/Dockerfile -t commet-web .
+docker run --rm -p 8080:8080 commet-web
+```
+
+Then open `http://localhost:8080`.
+
 ## Commet Federation Kit (CFK)
 
 To reduce Matrix homeserver setup friction, this repo now includes a starter deployment kit in [`cfk/`](cfk/). It includes:
