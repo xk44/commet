@@ -91,6 +91,7 @@ class Preferences {
   static const String _deleteWithoutConfirmation =
       "delete_without_confirmation";
   static const String _appLanguage = "app_language";
+  static const String _smoothTimelineScroll = "smooth_timeline_scroll";
 
   final StreamController _onSettingChanged = StreamController.broadcast();
   Stream get onSettingChanged => _onSettingChanged.stream;
@@ -385,6 +386,14 @@ class Preferences {
 
   bool get autoPlayAnimatedMedia =>
       _preferences!.getBool(_autoPlayAnimatedMedia) ?? true;
+
+  bool get smoothTimelineScroll =>
+      _preferences!.getBool(_smoothTimelineScroll) ?? true;
+
+  Future<void> setSmoothTimelineScroll(bool value) async {
+    await _preferences!.setBool(_smoothTimelineScroll, value);
+    _onSettingChanged.add(null);
+  }
 
   Future<void> setAutoPlayAnimatedMedia(bool value) async {
     await _preferences!.setBool(_autoPlayAnimatedMedia, value);

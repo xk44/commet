@@ -18,6 +18,7 @@ class GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool enableTenor = false;
   bool enableEncryptedPreview = false;
   bool autoPlayAnimatedMedia = false;
+  bool smoothTimelineScroll = true;
   String? selectedLanguageCode;
 
   String get labelThirdPartyServicesTitle =>
@@ -88,6 +89,16 @@ class GeneralSettingsPageState extends State<GeneralSettingsPage> {
       desc: "Description for the auto-play animated media toggle",
       name: "labelAutoPlayAnimatedMediaDescription");
 
+  String get labelSmoothTimelineScrollToggle => Intl.message(
+      "Smooth timeline scrolling",
+      desc: "Label for the toggle controlling smooth timeline scrolling",
+      name: "labelSmoothTimelineScrollToggle");
+
+  String get labelSmoothTimelineScrollDescription => Intl.message(
+      "Animate timeline jumps and snaps instead of instantly jumping",
+      desc: "Description for the smooth timeline scrolling toggle",
+      name: "labelSmoothTimelineScrollDescription");
+
   String get labelMediaPreviewPrivateRoomsToggle => Intl.message(
         "Private Rooms",
         desc:
@@ -117,6 +128,7 @@ class GeneralSettingsPageState extends State<GeneralSettingsPage> {
     enableTenor = preferences.tenorGifSearchEnabled;
     enableEncryptedPreview = preferences.urlPreviewInE2EEChat;
     autoPlayAnimatedMedia = preferences.autoPlayAnimatedMedia;
+    smoothTimelineScroll = preferences.smoothTimelineScroll;
     selectedLanguageCode = preferences.appLanguage;
     super.initState();
   }
@@ -297,6 +309,20 @@ class GeneralSettingsPageState extends State<GeneralSettingsPage> {
               onChanged: (value) async {
                 await preferences.setMediaPreviewInPublicRooms(value);
                 setState(() {});
+              },
+            ),
+            settingToggle(
+              smoothTimelineScroll,
+              title: labelSmoothTimelineScrollToggle,
+              description: labelSmoothTimelineScrollDescription,
+              onChanged: (value) async {
+                setState(() {
+                  smoothTimelineScroll = value;
+                });
+                await preferences.setSmoothTimelineScroll(value);
+                setState(() {
+                  smoothTimelineScroll = preferences.smoothTimelineScroll;
+                });
               },
             ),
             settingToggle(
