@@ -1,5 +1,6 @@
 import 'package:commet/ui/navigation/adaptive_dialog.dart';
 import 'package:commet/ui/pages/settings/categories/account/security/matrix/session/matrix_session_view.dart';
+import 'package:commet/utils/common_strings.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:matrix/matrix.dart';
@@ -47,14 +48,40 @@ class _MatrixSessionState extends State<MatrixSession> {
   void beginVerification() async {
     var keys = widget.matrixClient.userDeviceKeys[widget.matrixClient.userID]
         ?.deviceKeys[widget.device.deviceId];
-    var request = await keys!.startVerification();
+
+    if (keys == null) {
+      if (!mounted) {
+        return;
+      }
+
+      AdaptiveDialog.show(context,
+          builder: (_) => const Text(
+              "Commet couldn't find encryption keys for this session yet. Please wait for keys to sync and try again."),
+          title: CommonStrings.error);
+      return;
+    }
+
+    final request = await keys.startVerification();
+    if (request == null) {
+      if (!mounted) {
+        return;
+      }
+
+      AdaptiveDialog.show(context,
+          builder: (_) => const Text(
+              "Unable to start verification for this session right now. Please try again in a moment."),
+          title: CommonStrings.error);
+      return;
+    }
+
     previousOnUpdate = request.onUpdate;
     request.onUpdate = onRequestUpdate;
 
-    if (mounted)
+    if (mounted) {
       AdaptiveDialog.show(context,
           builder: (_) => MatrixVerificationPage(request: request),
           title: "Verification Request");
+    }
   }
 
   void onRequestUpdate() {
