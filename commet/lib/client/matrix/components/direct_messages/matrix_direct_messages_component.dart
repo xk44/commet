@@ -89,8 +89,25 @@ class MatrixDirectMessagesComponent
   }
 
   void updateRoomsList() {
-    directMessageRooms =
-        client.rooms.where((r) => isRoomDirectMessage(r)).toList();
+    final directRooms = client.rooms.where((r) => isRoomDirectMessage(r));
+    final deduplicatedRooms = <String, Room>{};
+
+    for (final room in directRooms) {
+      final partnerId = getDirectMessagePartnerId(room);
+
+      if (partnerId == null) {
+        deduplicatedRooms[room.identifier] = room;
+        continue;
+      }
+
+      final previousRoom = deduplicatedRooms[partnerId];
+      if (previousRoom == null ||
+          room.lastEventTimestamp.isAfter(previousRoom.lastEventTimestamp)) {
+        deduplicatedRooms[partnerId] = room;
+      }
+    }
+
+    directMessageRooms = deduplicatedRooms.values.toList();
 
     listUpdated.add(null);
   }
