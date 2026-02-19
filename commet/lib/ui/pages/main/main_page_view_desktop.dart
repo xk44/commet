@@ -387,6 +387,7 @@ class MainPageViewDesktop extends StatelessWidget {
               filterClient: state.filterClient,
               directMessages: state.clientManager.directMessages,
               onSelected: (room) => state.selectRoom(room),
+              onCreateDirectMessage: () => state.startDirectMessage(context),
             ),
           ),
         ],

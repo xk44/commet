@@ -5,23 +5,27 @@ import 'package:commet/client/components/direct_messages/direct_message_componen
 import 'package:commet/ui/molecules/user_panel.dart';
 import 'package:commet/utils/event_bus.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:implicitly_animated_list/implicitly_animated_list.dart';
+
 import '../atoms/dot_indicator.dart';
 
 class DirectMessageList extends StatefulWidget {
-  const DirectMessageList(
-      {required this.directMessages,
-      this.onSelected,
-      this.filterClient,
-      super.key});
-  final DirectMessagesInterface directMessages;
+  const DirectMessageList({
+    required this.directMessages,
+    this.onSelected,
+    this.onCreateDirectMessage,
+    this.filterClient,
+    super.key,
+  });
 
+  final DirectMessagesInterface directMessages;
   final Client? filterClient;
+  final Future<void> Function()? onCreateDirectMessage;
+  final Function(Room room)? onSelected;
 
   @override
   State<DirectMessageList> createState() => _DirectMessageListState();
-  final Function(Room room)? onSelected;
 }
 
 class _DirectMessageListState extends State<DirectMessageList> {
@@ -85,46 +89,65 @@ class _DirectMessageListState extends State<DirectMessageList> {
 
   @override
   Widget build(BuildContext context) {
-    return ImplicitlyAnimatedList(
-      itemData: rooms,
-      initialAnimation: false,
-      itemBuilder: (context, room) {
-        final component = room.client.getComponent<DirectMessagesComponent>();
-        final id = component?.getDirectMessagePartnerId(room);
-        if (id == null) {
-          return Container();
-        }
-
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(4, 1, 0, 1),
-          child: SizedBox(
-            height: 55,
-            child: Row(
-              children: [
-                Expanded(
-                  child: UserPanel(
-                    userId: id,
-                    key: ValueKey("home-screen-direct-message-entry-${id}"),
-                    client: room.client,
-                    contextRoom: room,
-                    isDirectMessage: true,
-                    onTap: () => setState(() {
-                      selectedRoom = room;
-                      widget.onSelected?.call(room);
-                    }),
-                  ),
-                ),
-                room.displayNotificationCount > 0
-                    ? const Padding(
-                        padding: EdgeInsets.all(2.0),
-                        child: DotIndicator(),
-                      )
-                    : Container()
-              ],
+    return Column(
+      children: [
+        if (widget.onCreateDirectMessage != null)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4, 0, 8, 4),
+            child: SizedBox(
+              height: 36,
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: widget.onCreateDirectMessage,
+                icon: const Icon(Icons.add),
+                label: const Text('New Direct Message'),
+              ),
             ),
           ),
-        );
-      },
+        Expanded(
+          child: ImplicitlyAnimatedList(
+            itemData: rooms,
+            initialAnimation: false,
+            itemBuilder: (context, room) {
+              final component = room.client.getComponent<DirectMessagesComponent>();
+              final id = component?.getDirectMessagePartnerId(room);
+              if (id == null) {
+                return Container();
+              }
+
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(4, 1, 0, 1),
+                child: SizedBox(
+                  height: 55,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: UserPanel(
+                          userId: id,
+                          key: ValueKey("home-screen-direct-message-entry-${id}"),
+                          client: room.client,
+                          contextRoom: room,
+                          isDirectMessage: true,
+                          onTap: () => setState(() {
+                            selectedRoom = room;
+                            widget.onSelected?.call(room);
+                          }),
+                        ),
+                      ),
+                      room.displayNotificationCount > 0
+                          ? const Padding(
+                              padding: EdgeInsets.all(2.0),
+                              child: DotIndicator(),
+                            )
+                          : Container(),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }
