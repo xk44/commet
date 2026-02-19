@@ -157,9 +157,13 @@ class RoomTimelineWidgetViewState extends State<RoomTimelineWidgetView> {
     if (index == 0) {
       if (attachedToBottom) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          controller.animateTo(controller.position.minScrollExtent,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeOutExpo);
+          if (preferences.smoothTimelineScroll) {
+            controller.animateTo(controller.position.minScrollExtent,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeOutExpo);
+          } else {
+            controller.jumpTo(controller.position.minScrollExtent);
+          }
         });
 
         widget.markAsRead?.call(timeline.events[0]);
@@ -287,16 +291,24 @@ class RoomTimelineWidgetViewState extends State<RoomTimelineWidgetView> {
 
     animatingToBottom = true;
 
-    controller
-        .animateTo(controller.position.minScrollExtent,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeOutExpo)
-        .then((_) {
+    if (preferences.smoothTimelineScroll) {
+      controller
+          .animateTo(controller.position.minScrollExtent,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeOutExpo)
+          .then((_) {
+        setState(() {
+          controller.jumpTo(0);
+          animatingToBottom = false;
+        });
+      });
+    } else {
+      controller.jumpTo(controller.position.minScrollExtent);
       setState(() {
         controller.jumpTo(0);
         animatingToBottom = false;
       });
-    });
+    }
 
     setState(() {
       recentItemsCount = 0;
@@ -566,9 +578,13 @@ class RoomTimelineWidgetViewState extends State<RoomTimelineWidgetView> {
         offset += eventHeight / 2;
       }
 
-      controller.animateTo(offset,
-          duration: const Duration(milliseconds: 300),
-          curve: Easing.emphasizedDecelerate);
+      if (preferences.smoothTimelineScroll) {
+        controller.animateTo(offset,
+            duration: const Duration(milliseconds: 300),
+            curve: Easing.emphasizedDecelerate);
+      } else {
+        controller.jumpTo(offset);
+      }
 
       if (mounted) {
         setState(() {

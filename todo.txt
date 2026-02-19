@@ -97,7 +97,7 @@ P1 — Messaging UX, search, and productivity (DP)
 ## Timeline performance / polish (P1)
 - [x] Prevent unnecessary re-evaluation of room fields (GHI #693) https://github.com/commetchat/commet/issues/693
 - [ ] Timeline UX megathread improvements (GHI #2) https://github.com/commetchat/commet/issues/2
-  - [ ] Smooth scroll toggle, virtualization improvements, etc.
+  - [x] Smooth scroll toggle, virtualization improvements, etc. (implemented smooth scroll toggle; virtualization improvements pending)
 
 ===========================================================
 P1 — Spaces/servers, permissions, and moderation (DP)
