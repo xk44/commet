@@ -20,6 +20,7 @@ P0 — Data safety, encryption, and “don’t brick the app”
   - [ ] Improve diagnostics (surface which session/key is missing)
 - [ ] Fix “can’t see encrypted message that can be seen on other apps” (GHI #388) https://github.com/commetchat/commet/issues/388
 - [ ] Fix “New login session verification not working” (GHI #668) https://github.com/commetchat/commet/issues/668
+- [x] Fix verification prompt not showing on first session after login (GHI #692) https://github.com/commetchat/commet/issues/692
 - [ ] Fix “Confirm session key button not working [WINDOWS ONLY]” (GHI #675) https://github.com/commetchat/commet/issues/675
 - [ ] Fix crash: beginVerification null check operator (GHI #680) https://github.com/commetchat/commet/issues/680
 - [ ] Fix “Unable to verify sessions from Android only” (GHI #380) https://github.com/commetchat/commet/issues/380
@@ -56,6 +57,7 @@ P1 — Calls, streaming, and Discord-level real-time features
   - [ ] SS audio: implement system-audio capture/loopback (platform-specific)
   - [ ] Add “SS quality presets” (Auto / Smooth / Low CPU / Low bandwidth)
   - [ ] Measure + expose pipeline stats (encode fps, dropped frames, RTT, loss)
+- [x] Fix error propagation in LiveKit backend (GHI #699) https://github.com/commetchat/commet/issues/699
 - [ ] Improve audio stack: VAD / auto mic threshold / noise suppression (GHI #603) https://github.com/commetchat/commet/issues/603
   - [ ] Optional AGC + RNNoise/WebRTC NS toggles
   - [ ] Per-device input selection + test meter
@@ -81,6 +83,7 @@ P1 — Messaging UX, search, and productivity (DP)
 ## Input / message controls (P1)
 - [x] Up arrow to edit last message (GHI #600) https://github.com/commetchat/commet/issues/600
 - [x] “Delete without confirmation” option (GHI #639) https://github.com/commetchat/commet/issues/639
+- [x] Added setting to ask before deleting messages (GHI #661) https://github.com/commetchat/commet/issues/661
 - [x] Highlight @room mentions (GHI #592) https://github.com/commetchat/commet/issues/592
 - [x] Collapse membership/state spam in rooms (GHI #598) https://github.com/commetchat/commet/issues/598
 - [x] Fix duplicate DM entries after room upgrades (GHI #597) https://github.com/commetchat/commet/issues/597
@@ -92,6 +95,7 @@ P1 — Messaging UX, search, and productivity (DP)
 - [ ] Support polls using MSC3381 (GHI #601) https://github.com/commetchat/commet/issues/601
 
 ## Timeline performance / polish (P1)
+- [x] Prevent unnecessary re-evaluation of room fields (GHI #693) https://github.com/commetchat/commet/issues/693
 - [ ] Timeline UX megathread improvements (GHI #2) https://github.com/commetchat/commet/issues/2
   - [ ] Smooth scroll toggle, virtualization improvements, etc.
 

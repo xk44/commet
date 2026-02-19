@@ -272,18 +272,17 @@ class TimelineEventMenu {
           name: CommonStrings.promptDelete,
           icon: Icons.delete,
           action: (BuildContext context) {
-            if (preferences.deleteWithoutConfirmation) {
+            if (preferences.askBeforeDeletingMessageEnabled) {
+              AdaptiveDialog.confirmation(context).then((value) {
+                if (value == true) {
+                  timeline.deleteEvent(event);
+                }
+                onActionFinished?.call();
+              });
+            } else {
               timeline.deleteEvent(event);
               onActionFinished?.call();
-              return;
             }
-
-            AdaptiveDialog.confirmation(context).then((value) {
-              if (value == true) {
-                timeline.deleteEvent(event);
-              }
-              onActionFinished?.call();
-            });
           },
         ),
 
