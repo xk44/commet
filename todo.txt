@@ -145,7 +145,7 @@ P1/P2 — Platform support, packaging, and distribution
   - [ ] Ensure SS/calls behave under iOS constraints
 
 ## Linux packaging + distro ergonomics (P1)
-- [ ] Trouble installing .deb on KDE Ubuntu (GHI #684) https://github.com/commetchat/commet/issues/684
+- [x] Trouble installing .deb on KDE Ubuntu (GHI #684) https://github.com/commetchat/commet/issues/684
 - [ ] Fix .deb landing in filesystem root (GHI #575) https://github.com/commetchat/commet/issues/575
 - [ ] Request AUR package (GHI #357) https://github.com/commetchat/commet/issues/357
 - [ ] Debian ARM64 support (GHI #371) https://github.com/commetchat/commet/issues/371
