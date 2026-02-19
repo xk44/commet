@@ -2,6 +2,7 @@ import 'package:commet/client/client.dart';
 import 'package:commet/client/components/read_receipts/read_receipt_component.dart';
 import 'package:commet/client/components/threads/thread_component.dart';
 import 'package:commet/client/timeline_events/timeline_event.dart';
+import 'package:commet/client/matrix/timeline_events/matrix_timeline_event_membership.dart';
 import 'package:commet/client/timeline_events/timeline_event_emote.dart';
 import 'package:commet/client/timeline_events/timeline_event_encrypted.dart';
 import 'package:commet/client/timeline_events/timeline_event_generic.dart';
@@ -120,8 +121,25 @@ class TimelineViewEntryState extends State<TimelineViewEntry>
 
     _widgetType = eventToDisplayType(event);
 
+    if (shouldCollapseStateSpam(eventIndex, event)) {
+      _widgetType = TimelineEventWidgetDisplayType.hidden;
+    }
+
     showDateSeperator = shouldEventShowDate(eventIndex);
     highlighted = event.eventId == widget.highlightedEventId;
+  }
+
+  bool shouldCollapseStateSpam(int eventIndex, TimelineEvent event) {
+    if (event is! MatrixTimelineEventMembership) {
+      return false;
+    }
+
+    if (eventIndex <= 0) {
+      return false;
+    }
+
+    final newerEvent = widget.timeline.events[eventIndex - 1];
+    return newerEvent is MatrixTimelineEventMembership;
   }
 
   static TimelineEventWidgetDisplayType eventToDisplayType(
