@@ -75,7 +75,7 @@ P1 — Messaging UX, search, and productivity (DP)
 - [ ] Start new DMs with user search / username input (GHI #691) https://github.com/commetchat/commet/issues/691
   - [x] Added username/user-id input flow from DM list (opens/creates DM)
   - [ ] Deferred: user directory search/picker UI (not yet implemented)
-- [ ] Ability to mark a message as last read (GHI #671) https://github.com/commetchat/commet/issues/671
+- [x] Ability to mark a message as last read (GHI #671) https://github.com/commetchat/commet/issues/671
 - [x] Allow searching for rooms (GHI #131) https://github.com/commetchat/commet/issues/131
 
 ## Input / message controls (P1)
@@ -84,7 +84,7 @@ P1 — Messaging UX, search, and productivity (DP)
 - [x] Highlight @room mentions (GHI #592) https://github.com/commetchat/commet/issues/592
 - [ ] Collapse membership/state spam in rooms (GHI #598) https://github.com/commetchat/commet/issues/598
 - [ ] Fix duplicate DM entries after room upgrades (GHI #597) https://github.com/commetchat/commet/issues/597
-- [ ] Allow custom state events (GHI #589) https://github.com/commetchat/commet/issues/589
+- [x] Allow custom state events (GHI #589) https://github.com/commetchat/commet/issues/589
 - [x] Disable auto-playing animated media (GHI #588) https://github.com/commetchat/commet/issues/588
 - [x] Fix .svg profile picture not showing (GHI #576) https://github.com/commetchat/commet/issues/576
 

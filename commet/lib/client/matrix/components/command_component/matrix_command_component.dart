@@ -26,6 +26,7 @@ class MatrixCommandComponent extends CommandComponent<MatrixClient> {
     client.getMatrixClient().addCommand("clearemojistats", clearEmojiStats);
     client.getMatrixClient().addCommand("setprofile", setProfile);
     client.getMatrixClient().addCommand("addwidget", addWidget);
+    client.getMatrixClient().addCommand("setstate", setState);
   }
 
   @override
@@ -139,5 +140,58 @@ class MatrixCommandComponent extends CommandComponent<MatrixClient> {
         args.room!.id, "im.vector.modular.widgets", id, content);
 
     return null;
+  }
+
+  FutureOr<String?> setState(matrix.CommandArgs args, StringBuffer? out) async {
+    if (args.room == null) {
+      return "This command can only be used in a room.";
+    }
+
+    final trimmedArgs = args.msg.trim();
+    if (trimmedArgs.isEmpty) {
+      return "Usage: /setstate <event_type> <state_key|-> <json_content>";
+    }
+
+    final firstSpace = trimmedArgs.indexOf(" ");
+    if (firstSpace == -1) {
+      return "Missing state key and JSON content. Usage: /setstate <event_type> <state_key|-> <json_content>";
+    }
+
+    final eventType = trimmedArgs.substring(0, firstSpace);
+    final keyAndContent = trimmedArgs.substring(firstSpace + 1).trim();
+    final secondSpace = keyAndContent.indexOf(" ");
+    if (secondSpace == -1) {
+      return "Missing JSON content. Usage: /setstate <event_type> <state_key|-> <json_content>";
+    }
+
+    final rawStateKey = keyAndContent.substring(0, secondSpace).trim();
+    final rawContent = keyAndContent.substring(secondSpace + 1).trim();
+
+    if (eventType.isEmpty || rawStateKey.isEmpty || rawContent.isEmpty) {
+      return "Usage: /setstate <event_type> <state_key|-> <json_content>";
+    }
+
+    Map<String, dynamic> parsedContent;
+    try {
+      final decoded = const JsonDecoder().convert(rawContent);
+      if (decoded is! Map<String, dynamic>) {
+        return "JSON content must be an object.";
+      }
+      parsedContent = decoded;
+    } catch (e) {
+      return "Invalid JSON content: ${e.toString()}";
+    }
+
+    final stateKey = rawStateKey == "-" ? "" : rawStateKey;
+
+    try {
+      await client.matrixClient
+          .setRoomStateWithKey(args.room!.id, eventType, stateKey, parsedContent);
+    } catch (e, s) {
+      Log.onError(e, s, content: "Failed to send state event");
+      return "Failed to send state event: ${e.toString()}";
+    }
+
+    return "State event sent.";
   }
 }

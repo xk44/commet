@@ -63,6 +63,12 @@ class TimelineEventMenu {
         name: "promptShowSource",
       );
 
+  String get promptMarkAsLastRead => Intl.message(
+        "Mark as Last Read",
+        desc: "Label for the menu option to mark a message as the last read event",
+        name: "promptMarkAsLastRead",
+      );
+
   String get promptReplayMessageEffect => Intl.message(
         "Replay Effect",
         desc:
@@ -103,6 +109,7 @@ class TimelineEventMenu {
     bool hasEffect = false;
     bool canReply = false;
     bool canDeleteEvent = false;
+    bool canMarkAsRead = false;
 
     bool canRetrySend = event.status != TimelineEventStatus.synced;
     bool canCancelSend = event.status != TimelineEventStatus.synced;
@@ -154,6 +161,7 @@ class TimelineEventMenu {
       canUnpin = canEditPinState && isPinned;
 
       hasEffect = effects?.hasEffect(event) == true;
+      canMarkAsRead = true;
     }
 
     var reactions =
@@ -276,6 +284,16 @@ class TimelineEventMenu {
               }
               onActionFinished?.call();
             });
+          },
+        ),
+
+      if (canMarkAsRead)
+        TimelineEventMenuEntry(
+          name: promptMarkAsLastRead,
+          icon: Icons.mark_chat_read,
+          action: (BuildContext context) {
+            timeline.markAsRead(event);
+            onActionFinished?.call();
           },
         ),
     ];
