@@ -150,7 +150,7 @@ P1/P2 — Platform support, packaging, and distribution
 - [ ] Request AUR package (GHI #357) https://github.com/commetchat/commet/issues/357
 - [ ] Debian ARM64 support (GHI #371) https://github.com/commetchat/commet/issues/371
 - [ ] Add to F-Droid (GHI #115) https://github.com/commetchat/commet/issues/115
-- [ ] Docker image? (client/container story) (GHI #635) https://github.com/commetchat/commet/issues/635
+- [x] Docker image for web client container story (GHI #635) https://github.com/commetchat/commet/issues/635
 
 ## Desktop QoL (P2)
 - [x] Change language on desktop client (GHI #641) https://github.com/commetchat/commet/issues/641
