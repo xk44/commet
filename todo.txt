@@ -40,7 +40,7 @@ P0 — Data safety, encryption, and “don’t brick the app”
 - [ ] Fix auth webview crash on KDE + Nvidia (GHI #640) https://github.com/commetchat/commet/issues/640
 
 ## Core navigation reliability (P0)
-- [ ] Fix notifications opening wrong room (GHI #591) https://github.com/commetchat/commet/issues/591
+- [x] Fix notifications opening wrong room (GHI #591) https://github.com/commetchat/commet/issues/591
 - [ ] Fix “Open whole space instead of subspace from notification” (GHI #383) https://github.com/commetchat/commet/issues/383
 
 ===========================================================
