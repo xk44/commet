@@ -5,6 +5,7 @@ import 'package:commet/config/build_config.dart';
 import 'package:commet/debug/log.dart';
 import 'package:commet/main.dart';
 import 'package:commet/utils/database/multiple_database_server.dart';
+import 'package:commet/utils/fs_utils.dart';
 import 'package:commet/utils/rng.dart';
 import 'package:drift/drift.dart';
 import 'package:path/path.dart' as p;
@@ -149,10 +150,7 @@ class DriftFileCache implements FileCache {
     Log.i("Cache: $temp");
 
     final dir = p.join(await AppConfig.getDatabasePath(), "app");
-    var directory = Directory(dir);
-    if (!await directory.exists()) {
-      await directory.create(recursive: true);
-    }
+    await FsUtils.ensureDirectoryPath(dir);
 
     final file = File(p.join(dir, "app_data.db"));
 
@@ -184,8 +182,11 @@ class DriftFileCache implements FileCache {
 
   Future<String> newPath() async {
     final dir = await getTemporaryDirectory();
+    final cacheDir = p.join(dir.path, "chat.commet.app", "file_cache");
+    await FsUtils.ensureDirectoryPath(cacheDir);
+
     String fileName = RandomUtils.getRandomString(30);
-    return p.join(dir.path, "chat.commet.app", "file_cache", fileName);
+    return p.join(cacheDir, fileName);
   }
 
   Future<String> generateTempFilePath() async {
