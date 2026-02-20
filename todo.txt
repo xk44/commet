@@ -24,7 +24,7 @@ P0 — Data safety, encryption, and “don’t brick the app”
 - [ ] Fix “Confirm session key button not working [WINDOWS ONLY]” (GHI #675) https://github.com/commetchat/commet/issues/675
 - [x] Fix crash: beginVerification null check operator (GHI #680) https://github.com/commetchat/commet/issues/680
 - [ ] Fix “Unable to verify sessions from Android only” (GHI #380) https://github.com/commetchat/commet/issues/380
-- [ ] Add clear UX feedback for unverified sessions (GHI #101) https://github.com/commetchat/commet/issues/101
+- [x] Add clear UX feedback for unverified sessions (GHI #101) https://github.com/commetchat/commet/issues/101
 - [ ] Add manual key import/export (GHI #631) https://github.com/commetchat/commet/issues/631
   - [ ] Export encrypted backup file w/ passphrase + QR option
   - [ ] Import flow with validation + “dry run” (what will be restored)
