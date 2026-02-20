@@ -51,6 +51,7 @@ class RoomPreviewView extends StatelessWidget {
                           RoomVisibility.private => Icons.lock,
                           RoomVisibility.invite => Icons.lock,
                           RoomVisibility.knock => Icons.lock,
+                          RoomVisibility.restricted => Icons.lock,
                         })
                   ],
                 ),

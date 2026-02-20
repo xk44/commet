@@ -46,6 +46,7 @@ extension MatrixExtensions on Client {
       "knock" => RoomVisibility.knock,
       "invite" => RoomVisibility.invite,
       "private" => RoomVisibility.private,
+      "restricted" => RoomVisibility.restricted,
       _ => RoomVisibility.private,
     };
 
