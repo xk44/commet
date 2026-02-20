@@ -16,8 +16,8 @@ P0 — Data safety, encryption, and “don’t brick the app”
 
 ## E2EE / verification / key management (P0)
 - [ ] Fix encrypted threads failing to decrypt (GHI #690) https://github.com/commetchat/commet/issues/690
-  - [ ] Add robust retry + fallback for thread event decryption
-  - [ ] Improve diagnostics (surface which session/key is missing)
+  - [x] Add robust retry + fallback for thread event decryption
+  - [x] Improve diagnostics (surface which session/key is missing)
 - [ ] Fix “can’t see encrypted message that can be seen on other apps” (GHI #388) https://github.com/commetchat/commet/issues/388
 - [ ] Fix “New login session verification not working” (GHI #668) https://github.com/commetchat/commet/issues/668
 - [x] Fix verification prompt not showing on first session after login (GHI #692) https://github.com/commetchat/commet/issues/692
