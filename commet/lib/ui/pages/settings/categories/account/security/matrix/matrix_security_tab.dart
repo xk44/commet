@@ -62,6 +62,19 @@ class _MatrixSecurityTabState extends State<MatrixSecurityTab> {
       desc: "Title of the popup dialog for restoring message backup",
       name: "labelRestoreMatrixBackupTitle");
 
+  String get labelUnverifiedSessionsWarning => Intl.message(
+      "Some of your sessions are unverified. Verify trusted sessions to keep encrypted messages and sign-ins secure.",
+      desc:
+          "Warning shown when one or more Matrix sessions are not verified yet",
+      name: "labelUnverifiedSessionsWarning");
+
+  String unverifiedSessionsCount(int count) => Intl.plural(count,
+      one: "1 unverified session",
+      other: "$count unverified sessions",
+      desc: "Shows how many unverified sessions are currently in the account",
+      name: "unverifiedSessionsCount",
+      args: [count]);
+
   @override
   void initState() {
     checkState();
@@ -106,29 +119,77 @@ class _MatrixSecurityTabState extends State<MatrixSecurityTab> {
   }
 
   Panel sessionsPanel() {
+    final unverifiedCount = devices
+            ?.where((device) =>
+                widget.client
+                    .getMatrixClient()
+                    .userDeviceKeys[widget.client.getMatrixClient().userID]
+                    ?.deviceKeys[device.deviceId]
+                    ?.verified !=
+                true)
+            .length ??
+        0;
+
     return Panel(
       header: labelMatrixAccountSessions,
       mode: TileType.surfaceContainerLow,
       child: devices == null
           ? const CircularProgressIndicator()
-          : ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: MatrixSession(
-                    devices![index],
-                    widget.client.getMatrixClient(),
-                    onUpdated: () {
-                      setState(() {
-                        getDevices();
-                      });
-                    },
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (unverifiedCount > 0)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .errorContainer
+                              .withValues(alpha: 0.75),
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Row(
+                          children: [
+                            Icon(Icons.warning_amber_rounded,
+                                color: Theme.of(context).colorScheme.error),
+                            const SizedBox(width: 8),
+                            Expanded(
+                                child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                tiamat.Text.label(
+                                    unverifiedSessionsCount(unverifiedCount)),
+                                tiamat.Text.labelLow(
+                                    labelUnverifiedSessionsWarning),
+                              ],
+                            )),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                );
-              },
-              itemCount: devices!.length,
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: MatrixSession(
+                        devices![index],
+                        widget.client.getMatrixClient(),
+                        onUpdated: () {
+                          setState(() {
+                            getDevices();
+                          });
+                        },
+                      ),
+                    );
+                  },
+                  itemCount: devices!.length,
+                ),
+              ],
             ),
     );
   }
