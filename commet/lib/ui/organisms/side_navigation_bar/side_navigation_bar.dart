@@ -68,6 +68,10 @@ class SideNavigationBar extends StatefulWidget {
 }
 
 class _SideNavigationBarState extends State<SideNavigationBar> {
+  static const double _sideBarWidth = 64;
+  static const double _navigationButtonSize = 54;
+  static const double _spaceAvatarSize = 44;
+
   late ClientManager _clientManager;
 
   late List<StreamSubscription> subs;
@@ -139,13 +143,13 @@ class _SideNavigationBarState extends State<SideNavigationBar> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        width: 70.0,
+        width: _sideBarWidth,
         child: Column(
           children: [
             Expanded(
               child: SpaceSelector(
                 topLevelSpaces,
-                width: 70,
+                width: _spaceAvatarSize,
                 clearSelection: widget.clearSpaceSelection,
                 shouldShowAvatarForSpace: shouldShowAvatarForSpace,
                 header: Column(
@@ -155,7 +159,7 @@ class _SideNavigationBarState extends State<SideNavigationBar> {
                         Stack(
                           children: [
                             ImageButton(
-                              size: 70,
+                              size: _navigationButtonSize,
                               icon: Icons.home,
                               onTap: () {
                                 widget.onHomeSelected?.call();
@@ -166,6 +170,7 @@ class _SideNavigationBarState extends State<SideNavigationBar> {
                         context),
                     SideNavigationBarDirectMessages(
                       _clientManager.directMessages,
+                      iconSize: _spaceAvatarSize,
                       onRoomTapped: widget.onDirectMessageSelected,
                     ),
                   ],
@@ -177,7 +182,7 @@ class _SideNavigationBarState extends State<SideNavigationBar> {
                       child: SideNavigationBar.tooltip(
                           promptAddSpace,
                           ImageButton(
-                            size: 70,
+                            size: _navigationButtonSize,
                             icon: Icons.add,
                             onTap: () {
                               GetOrCreateRoom.show(null, context,
@@ -199,7 +204,7 @@ class _SideNavigationBarState extends State<SideNavigationBar> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children:
-                    widget.extraEntryBuilders!.map((e) => e(70.0)).toList(),
+                    widget.extraEntryBuilders!.map((e) => e(_sideBarWidth)).toList(),
               ),
           ],
         ));
