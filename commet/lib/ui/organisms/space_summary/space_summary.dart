@@ -77,6 +77,8 @@ class _SpaceSummaryState extends State<SpaceSummary> {
   }
 
   Future<void> createRoom(Client client, CreateRoomArgs args) async {
+    args.restrictedParentSpaceId = widget.space.identifier;
+
     var room = await client.createRoom(args);
     await widget.space.setSpaceChildRoom(room);
   }
@@ -95,6 +97,7 @@ class _SpaceSummaryState extends State<SpaceSummary> {
       context,
       joinRoom: false,
       showAllRoomTypes: true,
+      restrictedParentSpaceId: widget.space.identifier,
       existingRoomsRemoveWhere: (child) {
         if (child case SpaceChildSpace s) {
           if (s.child == widget.space) return true;
