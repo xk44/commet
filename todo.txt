@@ -175,4 +175,4 @@ P2 — Accessibility, notifications tuning, and calendar
 - [ ] Incorporate Linux Flatpak feedback (GHI #632) https://github.com/commetchat/commet/issues/632
   - [x] Allow dismissing image lightbox with Escape
   - [x] Add left/right arrow navigation when viewing images
-  - [ ] Investigate and fix reported device-verification UX gaps on Linux/Flatpak
+  - [x] Investigate and fix reported device-verification UX gaps on Linux/Flatpak (added robust retry for verification/auth dialog display when navigator context is not ready)
