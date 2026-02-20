@@ -21,6 +21,7 @@ import 'package:commet/client/matrix/matrix_peer.dart';
 import 'package:commet/client/matrix/matrix_role.dart';
 import 'package:commet/client/matrix/matrix_room_permissions.dart';
 import 'package:commet/client/matrix/matrix_timeline.dart';
+import 'package:commet/client/matrix/utils/decryption_retry.dart';
 import 'package:commet/client/matrix/timeline_events/matrix_timeline_event_add_reaction.dart';
 import 'package:commet/client/matrix/timeline_events/matrix_timeline_event.dart';
 import 'package:commet/client/matrix/timeline_events/matrix_timeline_event_call.dart';
@@ -647,9 +648,9 @@ class MatrixRoom extends Room {
 
     if (event.type == matrix.EventTypes.Encrypted) {
       try {
-        await event.requestKey();
+        await requestKeyWithRetry(event, context: 'MatrixRoom.getEvent');
       } catch (_) {
-        Log.i("Failed to decrypt event: $event");
+        // Keep returning the encrypted event if keys are still unavailable.
       }
     }
 
