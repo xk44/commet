@@ -10,11 +10,12 @@ import 'package:implicitly_animated_list/implicitly_animated_list.dart';
 
 class SideNavigationBarDirectMessages extends StatefulWidget {
   const SideNavigationBarDirectMessages(this.directMessages,
-      {super.key, this.onRoomTapped, this.filterClient});
+      {super.key, this.onRoomTapped, this.filterClient, this.iconSize = 44});
   final DirectMessagesInterface directMessages;
   final Client? filterClient;
 
   final void Function(Room room)? onRoomTapped;
+  final double iconSize;
 
   @override
   State<SideNavigationBarDirectMessages> createState() =>
@@ -84,7 +85,7 @@ class _SideNavigationBarDirectMessagesState
             placeholderColor: data.defaultColor,
             spaceId: data.identifier,
             avatar: data.avatar,
-            width: 70,
+            width: widget.iconSize,
             highlightedNotificationCount: data.notificationCount,
             onTap: () => widget.onRoomTapped?.call(data),
           );
