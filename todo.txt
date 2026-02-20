@@ -35,7 +35,7 @@ P0 — Data safety, encryption, and “don’t brick the app”
   - [ ] Add DB integrity checks + auto-repair / safe reset options
   - [ ] Reduce peak memory (timeline virtualization, image cache caps)
   - [ ] Add watchdog to prevent “corrupt on crash” write patterns
-- [ ] Fix Windows startup freeze if temp folder exists (GHI #674) https://github.com/commetchat/commet/issues/674
+- [x] Fix Windows startup freeze if temp folder exists (GHI #674) https://github.com/commetchat/commet/issues/674
 - [ ] Ship libcrypto.dll in Windows installer (GHI #672) https://github.com/commetchat/commet/issues/672
 - [ ] Fix auth webview crash on KDE + Nvidia (GHI #640) https://github.com/commetchat/commet/issues/640
 

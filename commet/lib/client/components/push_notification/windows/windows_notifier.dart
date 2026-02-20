@@ -7,6 +7,7 @@ import 'package:commet/client/room.dart';
 import 'package:commet/main.dart';
 import 'package:commet/utils/common_strings.dart';
 import 'package:commet/utils/event_bus.dart';
+import 'package:commet/utils/fs_utils.dart';
 import 'package:commet/utils/shortcuts_manager.dart';
 import 'package:desktop_notifications/desktop_notifications.dart';
 import 'package:flutter/services.dart';
@@ -30,7 +31,10 @@ class WindowsNotifier implements Notifier {
   @override
   Future<void> init() async {
     final dir = await getTemporaryDirectory();
-    var file = p.join(dir.path, "chat.commet.app", "commet_app_icon.png");
+    final appTempDir = p.join(dir.path, "chat.commet.app");
+    await FsUtils.ensureDirectoryPath(appTempDir);
+
+    var file = p.join(appTempDir, "commet_app_icon.png");
 
     ByteData data = await rootBundle
         .load("assets/images/app_icon/app_icon_transparent_cropped.png");
