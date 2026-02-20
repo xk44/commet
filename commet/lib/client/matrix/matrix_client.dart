@@ -464,14 +464,33 @@ class MatrixClient extends Client {
       ];
     }
 
+    if (args.visibility == RoomVisibility.restricted &&
+        args.restrictedParentSpaceId != null) {
+      initialState ??= [];
+      initialState.add(
+        matrix.StateEvent(
+          type: matrix.EventTypes.RoomJoinRules,
+          content: {
+            "join_rule": "restricted",
+            "allow": [
+              {
+                "type": "m.room_membership",
+                "room_id": args.restrictedParentSpaceId,
+              }
+            ],
+          },
+        ),
+      );
+    }
+
     var id = await _matrixClient.createRoom(
       creationContent: creationContent,
       name: args.name,
       initialState: initialState,
       topic: args.topic,
-      visibility: args.visibility == RoomVisibility.private
-          ? matrix.Visibility.private
-          : matrix.Visibility.public,
+      visibility: args.visibility == RoomVisibility.public
+          ? matrix.Visibility.public
+          : matrix.Visibility.private,
     );
 
     await _matrixClient.waitForRoomInSync(id);

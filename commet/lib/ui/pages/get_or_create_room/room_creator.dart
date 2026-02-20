@@ -182,6 +182,18 @@ class RoomFieldVisibility implements RoomField {
         desc: "Short label for room visibility public",
       );
 
+  String get labelVisibilityRestricted => Intl.message(
+        "Restricted",
+        name: "labelVisibilityRestricted",
+        desc: "Short label for restricted room visibility",
+      );
+
+  String get roomVisibilityRestrictedExplanation => Intl.message(
+        "Users who can access the selected space will be able to join this room",
+        name: "roomVisibilityRestrictedExplanation",
+        desc: "Explains what restricted room visibility means",
+      );
+
   @override
   void setDefaults(CreateRoomArgs args) {
     args.visibility = RoomVisibility.private;
@@ -202,6 +214,7 @@ class RoomFieldVisibility implements RoomField {
         items: [
           RoomVisibility.public,
           RoomVisibility.private,
+          if (args.restrictedParentSpaceId != null) RoomVisibility.restricted,
         ],
         onItemSelected: (item) {
           args.visibility = item;
@@ -220,10 +233,15 @@ class RoomFieldVisibility implements RoomField {
             case RoomVisibility.private:
             case RoomVisibility.invite:
             case RoomVisibility.knock:
-            case RoomVisibility.restricted:
               title = labelVisibilityPrivate;
               icon = Icons.lock;
               subtitle = roomVisibilityPrivateExplanation;
+
+              break;
+            case RoomVisibility.restricted:
+              title = labelVisibilityRestricted;
+              icon = Icons.lock;
+              subtitle = roomVisibilityRestrictedExplanation;
 
               break;
             case null:

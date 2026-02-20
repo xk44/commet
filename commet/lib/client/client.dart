@@ -63,6 +63,7 @@ extension ToString on RoomType {
 class CreateRoomArgs {
   String? name;
   RoomVisibility? visibility;
+  String? restrictedParentSpaceId;
   bool? enableE2EE;
   RoomType roomType;
   String? topic;
@@ -70,6 +71,7 @@ class CreateRoomArgs {
   CreateRoomArgs({
     this.name,
     this.visibility,
+    this.restrictedParentSpaceId,
     this.enableE2EE,
     this.topic,
     this.roomType = RoomType.defaultRoom,

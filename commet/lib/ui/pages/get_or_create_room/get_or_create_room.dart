@@ -56,6 +56,7 @@ class GetOrCreateRoom extends StatefulWidget {
     bool createPhotoRoom = false,
     bool createCalendar = false,
     String? initialRoomAddress,
+    String? restrictedParentSpaceId,
     bool Function(SpaceChild child)? existingRoomsRemoveWhere,
   }) async {
     if (client == null) {
@@ -84,6 +85,7 @@ class GetOrCreateRoom extends StatefulWidget {
             ],
           ),
           create: (args) async {
+            args.restrictedParentSpaceId = restrictedParentSpaceId;
             return SpaceChildRoom(await client!.createRoom(args));
           },
         ),
@@ -103,6 +105,7 @@ class GetOrCreateRoom extends StatefulWidget {
             ],
           ),
           create: (args) async {
+            args.restrictedParentSpaceId = restrictedParentSpaceId;
             return SpaceChildRoom(await client!.createRoom(args));
           },
         ),
@@ -121,6 +124,7 @@ class GetOrCreateRoom extends StatefulWidget {
             ],
           ),
           create: (args) async {
+            args.restrictedParentSpaceId = restrictedParentSpaceId;
             return SpaceChildRoom(await client!.createRoom(args));
           },
         ),
@@ -139,6 +143,7 @@ class GetOrCreateRoom extends StatefulWidget {
             ],
           ),
           create: (args) async {
+            args.restrictedParentSpaceId = restrictedParentSpaceId;
             return SpaceChildRoom(await client!.createRoom(args));
           },
         ),
