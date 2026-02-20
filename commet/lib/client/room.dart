@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'attachment.dart';
 import 'permissions.dart';
 
-enum RoomVisibility { public, private, invite, knock }
+enum RoomVisibility { public, private, invite, knock, restricted }
 
 enum PushRule { notify, mentionsOnly, dontNotify }
 

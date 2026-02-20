@@ -107,6 +107,8 @@ class MatrixSpace extends Space {
         return RoomVisibility.invite;
       case matrix.JoinRules.private:
         return RoomVisibility.private;
+      case matrix.JoinRules.restricted:
+        return RoomVisibility.restricted;
       default:
         return RoomVisibility.private;
     }

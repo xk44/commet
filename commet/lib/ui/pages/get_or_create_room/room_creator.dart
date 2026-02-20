@@ -220,6 +220,7 @@ class RoomFieldVisibility implements RoomField {
             case RoomVisibility.private:
             case RoomVisibility.invite:
             case RoomVisibility.knock:
+            case RoomVisibility.restricted:
               title = labelVisibilityPrivate;
               icon = Icons.lock;
               subtitle = roomVisibilityPrivateExplanation;
