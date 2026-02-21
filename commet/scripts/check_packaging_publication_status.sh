@@ -4,6 +4,19 @@ set -euo pipefail
 strict=0
 check_issue_state=1
 
+aur_publication_pr_url="${COMMET_AUR_PUBLICATION_PR_URL:-}"
+fdroid_publication_mr_url="${COMMET_FDROID_PUBLICATION_MR_URL:-}"
+
+usage() {
+  cat <<USAGE
+Usage: $0 [--strict] [--skip-issue-state] [--aur-publication-pr-url <url>] [--fdroid-publication-mr-url <url>]
+
+Environment variable equivalents:
+  COMMET_AUR_PUBLICATION_PR_URL
+  COMMET_FDROID_PUBLICATION_MR_URL
+USAGE
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --strict)
@@ -12,9 +25,29 @@ while [[ $# -gt 0 ]]; do
     --skip-issue-state)
       check_issue_state=0
       ;;
+    --aur-publication-pr-url)
+      aur_publication_pr_url="${2:-}"
+      if [[ -z "$aur_publication_pr_url" ]]; then
+        echo "--aur-publication-pr-url requires a URL argument" >&2
+        exit 1
+      fi
+      shift
+      ;;
+    --fdroid-publication-mr-url)
+      fdroid_publication_mr_url="${2:-}"
+      if [[ -z "$fdroid_publication_mr_url" ]]; then
+        echo "--fdroid-publication-mr-url requires a URL argument" >&2
+        exit 1
+      fi
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
     *)
       echo "Unknown argument: $1" >&2
-      echo "Usage: $0 [--strict] [--skip-issue-state]" >&2
+      usage >&2
       exit 1
       ;;
   esac
@@ -109,4 +142,73 @@ if [[ "$strict" == "1" ]]; then
     echo "Strict mode failed: one or more publication targets are not in sync with local versions." >&2
     exit 2
   fi
+fi
+
+extract_github_pr_ref() {
+  local url="$1"
+  if [[ "$url" =~ ^https://github\.com/([^/]+)/([^/]+)/pull/([0-9]+) ]]; then
+    echo "${BASH_REMATCH[1]}/${BASH_REMATCH[2]}/${BASH_REMATCH[3]}"
+    return 0
+  fi
+
+  return 1
+}
+
+extract_gitlab_project_and_mr() {
+  local url="$1"
+  if [[ "$url" =~ ^https://gitlab\.com/(.+)/-/merge_requests/([0-9]+) ]]; then
+    echo "${BASH_REMATCH[1]}|${BASH_REMATCH[2]}"
+    return 0
+  fi
+
+  return 1
+}
+
+echo
+echo "Optional publication PR/MR trackers"
+if [[ -n "$aur_publication_pr_url" ]]; then
+  if pr_ref="$(extract_github_pr_ref "$aur_publication_pr_url")"; then
+    IFS='/' read -r pr_owner pr_repo pr_number <<<"$pr_ref"
+    pr_api_url="https://api.github.com/repos/${pr_owner}/${pr_repo}/pulls/${pr_number}"
+    if pr_response="$(curl -fsSL "$pr_api_url" 2>/dev/null)"; then
+      pr_state="$(echo "$pr_response" | jq -r '.state // "unknown"')"
+      pr_title="$(echo "$pr_response" | jq -r '.title // "(no title)"')"
+      pr_merged="$(echo "$pr_response" | jq -r '.merged // false')"
+      if [[ "$pr_merged" == "true" ]]; then
+        pr_state="merged"
+      fi
+      echo "- AUR publication PR: $pr_state ($pr_title)"
+      echo "  $aur_publication_pr_url"
+    else
+      echo "- AUR publication PR: unavailable (GitHub API request failed)"
+      echo "  $aur_publication_pr_url"
+    fi
+  else
+    echo "- AUR publication PR: skipped (unsupported URL format)"
+    echo "  $aur_publication_pr_url"
+  fi
+else
+  echo "- AUR publication PR: not configured"
+fi
+
+if [[ -n "$fdroid_publication_mr_url" ]]; then
+  if mr_ref="$(extract_gitlab_project_and_mr "$fdroid_publication_mr_url")"; then
+    IFS='|' read -r mr_project mr_iid <<<"$mr_ref"
+    project_encoded="$(printf '%s' "$mr_project" | sed 's#/#%2F#g')"
+    mr_api_url="https://gitlab.com/api/v4/projects/${project_encoded}/merge_requests/${mr_iid}"
+    if mr_response="$(curl -fsSL "$mr_api_url" 2>/dev/null)"; then
+      mr_state="$(echo "$mr_response" | jq -r '.state // "unknown"')"
+      mr_title="$(echo "$mr_response" | jq -r '.title // "(no title)"')"
+      echo "- F-Droid metadata MR: $mr_state ($mr_title)"
+      echo "  $fdroid_publication_mr_url"
+    else
+      echo "- F-Droid metadata MR: unavailable (GitLab API request failed)"
+      echo "  $fdroid_publication_mr_url"
+    fi
+  else
+    echo "- F-Droid metadata MR: skipped (unsupported URL format)"
+    echo "  $fdroid_publication_mr_url"
+  fi
+else
+  echo "- F-Droid metadata MR: not configured"
 fi

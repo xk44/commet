@@ -35,6 +35,11 @@ Use the repository helper to compare local packaging versions with what is curre
 
 # Optional: skip GitHub issue-state lookups (useful in rate-limited/offline environments)
 ./commet/scripts/check_packaging_publication_status.sh --skip-issue-state
+
+# Optional: include publication PR/MR links so status output includes their current state
+./commet/scripts/check_packaging_publication_status.sh \
+  --aur-publication-pr-url https://github.com/<owner>/<repo>/pull/<id> \
+  --fdroid-publication-mr-url https://gitlab.com/fdroid/fdroiddata/-/merge_requests/<id>
 ```
 
 ## Clean Arch verification

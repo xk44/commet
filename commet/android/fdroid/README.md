@@ -40,6 +40,11 @@ Check whether local versions are already reflected in AUR (`commet-bin`) and F-D
 
 # Optional: skip GitHub issue-state lookups (useful in rate-limited/offline environments)
 ./commet/scripts/check_packaging_publication_status.sh --skip-issue-state
+
+# Optional: include publication PR/MR links so status output includes their current state
+./commet/scripts/check_packaging_publication_status.sh \
+  --aur-publication-pr-url https://github.com/<owner>/<repo>/pull/<id> \
+  --fdroid-publication-mr-url https://gitlab.com/fdroid/fdroiddata/-/merge_requests/<id>
 ```
 
 ## Metadata PR helper
@@ -65,6 +70,9 @@ F-Droid submission template:
 # Optional flags
 ./scripts/prepare_packaging_publication_bundle.sh --skip-aur-verify --skip-issue-state
 ./scripts/prepare_packaging_publication_bundle.sh --fdroid-apk build/app/outputs/flutter-apk/app-release.apk
+./scripts/prepare_packaging_publication_bundle.sh \
+  --aur-publication-pr-url https://github.com/<owner>/<repo>/pull/<id> \
+  --fdroid-publication-mr-url https://gitlab.com/fdroid/fdroiddata/-/merge_requests/<id>
 ```
 
 ## Notes

@@ -7,15 +7,18 @@ project_root="$repo_root/commet"
 skip_aur_verify=0
 skip_issue_state=0
 fdroid_apk_path=""
+aur_publication_pr_url="${COMMET_AUR_PUBLICATION_PR_URL:-}"
+fdroid_publication_mr_url="${COMMET_FDROID_PUBLICATION_MR_URL:-}"
 
 usage() {
   cat <<USAGE
-Usage: $0 [--skip-aur-verify] [--skip-issue-state] [--fdroid-apk <path>]
+Usage: $0 [--skip-aur-verify] [--skip-issue-state] [--fdroid-apk <path>] [--aur-publication-pr-url <url>] [--fdroid-publication-mr-url <url>]
 
 Runs local publication-prep steps for pending packaging tasks:
 - Checks local version status vs AUR + F-Droid metadata.
 - Optionally verifies AUR package build/install in a clean Arch container.
 - Regenerates android/fdroid/submission_template.md (optionally with APK checksum).
+- Optionally checks publication PR/MR links when provided.
 USAGE
 }
 
@@ -31,6 +34,22 @@ while [[ $# -gt 0 ]]; do
       fdroid_apk_path="${2:-}"
       if [[ -z "$fdroid_apk_path" ]]; then
         echo "--fdroid-apk requires a path argument" >&2
+        exit 1
+      fi
+      shift
+      ;;
+    --aur-publication-pr-url)
+      aur_publication_pr_url="${2:-}"
+      if [[ -z "$aur_publication_pr_url" ]]; then
+        echo "--aur-publication-pr-url requires a URL argument" >&2
+        exit 1
+      fi
+      shift
+      ;;
+    --fdroid-publication-mr-url)
+      fdroid_publication_mr_url="${2:-}"
+      if [[ -z "$fdroid_publication_mr_url" ]]; then
+        echo "--fdroid-publication-mr-url requires a URL argument" >&2
         exit 1
       fi
       shift
@@ -52,6 +71,12 @@ echo "==> Checking publication status (AUR + F-Droid metadata)"
 status_args=()
 if [[ "$skip_issue_state" == "1" ]]; then
   status_args+=("--skip-issue-state")
+fi
+if [[ -n "$aur_publication_pr_url" ]]; then
+  status_args+=("--aur-publication-pr-url" "$aur_publication_pr_url")
+fi
+if [[ -n "$fdroid_publication_mr_url" ]]; then
+  status_args+=("--fdroid-publication-mr-url" "$fdroid_publication_mr_url")
 fi
 "$project_root/scripts/check_packaging_publication_status.sh" "${status_args[@]}"
 
