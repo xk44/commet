@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+strict=0
+if [[ "${1:-}" == "--strict" ]]; then
+  strict=1
+elif [[ -n "${1:-}" ]]; then
+  echo "Unknown argument: $1" >&2
+  echo "Usage: $0 [--strict]" >&2
+  exit 1
+fi
+
 repo_root="$(cd "$(dirname "$0")/../.." && pwd)"
 project_root="$repo_root/commet"
 pkgbuild="$project_root/linux/aur/PKGBUILD"
@@ -28,6 +37,9 @@ echo "Local packaging status"
 echo "- PKGBUILD pkgver: $local_pkgver"
 echo "- pubspec version: $local_version"
 
+aur_matches_local=0
+fdroid_matches_local=0
+
 aur_response="$(curl -fsSL "$aur_rpc_url")"
 aur_version="$(echo "$aur_response" | jq -r '.results[0].Version // empty' | cut -d- -f1)"
 aur_found="$(echo "$aur_response" | jq -r '.resultcount // 0')"
@@ -38,6 +50,7 @@ else
   echo "- AUR ($aur_pkg): $aur_version"
   if [[ "$aur_version" == "$local_pkgver" ]]; then
     echo "  -> AUR version matches local PKGBUILD"
+    aur_matches_local=1
   else
     echo "  -> AUR version differs from local PKGBUILD"
   fi
@@ -50,6 +63,7 @@ if curl -fsSL "$fdroid_metadata_url" -o "$fdroid_tmp" 2>/dev/null; then
     echo "- F-Droid ($app_id): metadata exists (CurrentVersion: $fdroid_current_version)"
     if [[ "$fdroid_current_version" == "$local_version" ]]; then
       echo "  -> F-Droid metadata version matches local pubspec"
+      fdroid_matches_local=1
     else
       echo "  -> F-Droid metadata version differs from local pubspec"
     fi
@@ -60,3 +74,15 @@ else
   echo "- F-Droid ($app_id): metadata not found in fdroiddata yet"
 fi
 rm -f "$fdroid_tmp"
+
+echo
+echo "Next-step trackers"
+echo "- AUR publish/update tracker (GHI #357): https://github.com/commetchat/commet/issues/357"
+echo "- F-Droid submission tracker (GHI #115): https://github.com/commetchat/commet/issues/115"
+
+if [[ "$strict" == "1" ]]; then
+  if [[ "$aur_matches_local" != "1" || "$fdroid_matches_local" != "1" ]]; then
+    echo "Strict mode failed: one or more publication targets are not in sync with local versions." >&2
+    exit 2
+  fi
+fi
