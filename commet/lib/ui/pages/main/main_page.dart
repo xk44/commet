@@ -441,7 +441,7 @@ class MainPageState extends State<MainPage> {
           client.spaces.where((element) => element.containsRoom(roomId));
 
       if (spacesWithRoom.isNotEmpty) {
-        selectSpace(spacesWithRoom.first);
+        selectSpace(_pickSpaceForNotificationTarget(client, spacesWithRoom));
       }
 
       selectRoom(room);
@@ -451,6 +451,43 @@ class MainPageState extends State<MainPage> {
           showAllRoomTypes: false,
           initialRoomAddress: originalId);
     }
+  }
+
+  Space _pickSpaceForNotificationTarget(
+      Client client, Iterable<Space> candidateSpaces) {
+    final candidates = candidateSpaces.toList(growable: false);
+    if (candidates.length == 1) {
+      return candidates.first;
+    }
+
+    final allSpaces = client.spaces;
+
+    int nestingDepth(Space space) {
+      int depth = 0;
+      Space? current = space;
+
+      while (current != null && depth <= allSpaces.length) {
+        final parent = allSpaces.firstWhereOrNull(
+          (element) => element.subspaces
+              .any((childSpace) => childSpace.identifier == current!.identifier),
+        );
+
+        if (parent == null) {
+          break;
+        }
+
+        depth++;
+        current = parent;
+      }
+
+      return depth;
+    }
+
+    candidates.sort(
+      (left, right) => nestingDepth(right).compareTo(nestingDepth(left)),
+    );
+
+    return candidates.first;
   }
 
   Future<void> askSwitchAccount(
