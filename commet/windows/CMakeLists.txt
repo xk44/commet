@@ -80,6 +80,38 @@ install(FILES "${FLUTTER_ICU_DATA_FILE}" DESTINATION "${INSTALL_BUNDLE_DATA_DIR}
 install(FILES "${FLUTTER_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
   COMPONENT Runtime)
 
+# Some crypto features (for example message-backup restore) rely on OpenSSL
+# runtime DLLs that may not be pulled in by plugin bundling automatically.
+# Copy them into the app bundle when available so packaged installs can use
+# encrypted backup workflows out of the box.
+set(OPENSSL_RUNTIME_DLL_NAMES
+  "libcrypto-3-x64.dll"
+  "libssl-3-x64.dll"
+  "libcrypto.dll"
+  "libssl.dll"
+)
+
+set(OPENSSL_RUNTIME_SEARCH_DIRS
+  "$ENV{OPENSSL_ROOT_DIR}/bin"
+  "$ENV{OPENSSL_DIR}/bin"
+  "$ENV{VCPKG_INSTALLED_DIR}/x64-windows/bin"
+)
+
+foreach(OPENSSL_DLL IN LISTS OPENSSL_RUNTIME_DLL_NAMES)
+  find_file(OPENSSL_DLL_PATH
+    NAMES ${OPENSSL_DLL}
+    PATHS ${OPENSSL_RUNTIME_SEARCH_DIRS}
+    NO_DEFAULT_PATH
+  )
+
+  if(OPENSSL_DLL_PATH)
+    install(FILES "${OPENSSL_DLL_PATH}" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
+      COMPONENT Runtime)
+  endif()
+
+  unset(OPENSSL_DLL_PATH CACHE)
+endforeach()
+
 if(PLUGIN_BUNDLED_LIBRARIES)
   install(FILES "${PLUGIN_BUNDLED_LIBRARIES}"
     DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
