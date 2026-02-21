@@ -29,6 +29,9 @@ Use the repository helper to compare local packaging versions with what is curre
 
 ```bash
 ./commet/scripts/check_packaging_publication_status.sh
+
+# CI-style check: exits non-zero when AUR/F-Droid are not in sync
+./commet/scripts/check_packaging_publication_status.sh --strict
 ```
 
 ## Clean Arch verification

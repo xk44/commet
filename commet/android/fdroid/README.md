@@ -34,6 +34,9 @@ Check whether local versions are already reflected in AUR (`commet-bin`) and F-D
 
 ```bash
 ./commet/scripts/check_packaging_publication_status.sh
+
+# CI-style check: exits non-zero when AUR/F-Droid are not in sync
+./commet/scripts/check_packaging_publication_status.sh --strict
 ```
 
 ## Metadata PR helper
