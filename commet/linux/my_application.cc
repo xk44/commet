@@ -8,8 +8,36 @@
 #include "flutter/generated_plugin_registrant.h"
 
 #include <filesystem> 
+#include <unistd.h>
 using namespace std;
 using namespace std::filesystem;
+
+namespace {
+
+bool has_nvidia_driver() {
+  return access("/proc/driver/nvidia/version", F_OK) == 0;
+}
+
+void apply_linux_webview_workarounds() {
+  // KDE Wayland + Nvidia users reported auth webview crashes in the helper
+  // window process. If unset, this workaround mirrors known-good settings
+  // from downstream reports while keeping user overrides intact.
+  if (g_getenv("__NV_DISABLE_EXPLICIT_SYNC") != nullptr) {
+    return;
+  }
+
+  if (g_getenv("WAYLAND_DISPLAY") == nullptr) {
+    return;
+  }
+
+  if (!has_nvidia_driver()) {
+    return;
+  }
+
+  g_setenv("__NV_DISABLE_EXPLICIT_SYNC", "1", FALSE);
+}
+
+} // namespace
 
 struct _MyApplication {
   GtkApplication parent_instance;
@@ -93,6 +121,8 @@ MyApplication* my_application_new() {
   // corresponding .desktop file. This ensures better integration by allowing
   // the application to be recognized beyond its binary name.
   g_set_prgname(APPLICATION_ID);
+
+  apply_linux_webview_workarounds();
 
 
 

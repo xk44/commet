@@ -41,7 +41,8 @@ P0 — Data safety, encryption, and “don’t brick the app”
   - [ ] Add watchdog to prevent “corrupt on crash” write patterns
 - [x] Fix Windows startup freeze if temp folder exists (GHI #674) https://github.com/commetchat/commet/issues/674
 - [x] Ship libcrypto.dll in Windows installer (GHI #672) https://github.com/commetchat/commet/issues/672
-- [ ] Fix auth webview crash on KDE + Nvidia (GHI #640) https://github.com/commetchat/commet/issues/640
+- [x] Fix auth webview crash on KDE + Nvidia (GHI #640) https://github.com/commetchat/commet/issues/640
+  - [x] Apply Linux Wayland+Nvidia env workaround (`__NV_DISABLE_EXPLICIT_SYNC=1`) when unset, preserving user overrides
 
 ## Core navigation reliability (P0)
 - [x] Fix notifications opening wrong room (GHI #591) https://github.com/commetchat/commet/issues/591
