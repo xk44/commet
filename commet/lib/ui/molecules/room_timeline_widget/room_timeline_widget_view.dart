@@ -52,6 +52,7 @@ class RoomTimelineWidgetViewState extends State<RoomTimelineWidgetView> {
 
   late ScrollController controller;
   late List<(GlobalKey, String)> eventKeys;
+  late Map<String, int> eventIndexes;
   late Timeline timeline;
 
   GlobalKey firstFrameScrollViewKey = GlobalKey();
@@ -133,6 +134,13 @@ class RoomTimelineWidgetViewState extends State<RoomTimelineWidgetView> {
         timeline.events
             .map((e) => (GlobalKey(debugLabel: e.eventId), e.eventId)),
         growable: true);
+    rebuildEventIndexes();
+  }
+
+  void rebuildEventIndexes() {
+    eventIndexes = {
+      for (int i = 0; i < eventKeys.length; i++) eventKeys[i].$2: i,
+    };
   }
 
   @override
@@ -149,6 +157,7 @@ class RoomTimelineWidgetViewState extends State<RoomTimelineWidgetView> {
       GlobalKey(debugLabel: timeline.events[index].eventId),
       timeline.events[index].eventId
     ));
+    rebuildEventIndexes();
 
     if (index == 0 || index < recentItemsCount) {
       recentItemsCount += 1;
@@ -181,10 +190,9 @@ class RoomTimelineWidgetViewState extends State<RoomTimelineWidgetView> {
     var event = timeline.events[index];
     var existing = eventKeys[index];
     eventKeys[index] = (existing.$1, event.eventId);
+    rebuildEventIndexes();
 
-    var keyIndex = eventKeys.indexWhere(
-      (element) => element.$2 == event.eventId,
-    );
+    var keyIndex = eventIndexes[event.eventId] ?? -1;
 
     if (keyIndex == -1) {
       Log.w("Failed to find updated event key for ${event.eventId}");
@@ -216,6 +224,7 @@ class RoomTimelineWidgetViewState extends State<RoomTimelineWidgetView> {
     }
 
     var removed = eventKeys.removeAt(index);
+    rebuildEventIndexes();
 
     assert(timeline.events[index].eventId == removed.$2);
 
@@ -431,8 +440,8 @@ class RoomTimelineWidgetViewState extends State<RoomTimelineWidgetView> {
                           );
                         },
                         findChildIndexCallback: (key) {
-                          var timelineIndex = eventKeys
-                              .indexWhere((element) => element.$1 == key);
+                          var timelineIndex =
+                              eventKeys.indexWhere((element) => element.$1 == key);
                           if (timelineIndex == -1) {
                             Log.w(
                                 "Failed to get timeline index for key: $timelineIndex");
@@ -480,8 +489,8 @@ class RoomTimelineWidgetViewState extends State<RoomTimelineWidgetView> {
                           );
                         },
                         findChildIndexCallback: (key) {
-                          var timelineIndex = eventKeys
-                              .indexWhere((element) => element.$1 == key);
+                          var timelineIndex =
+                              eventKeys.indexWhere((element) => element.$1 == key);
                           if (timelineIndex == -1) {
                             Log.w(
                                 "Failed to get timeline index for key: $timelineIndex");
@@ -546,7 +555,7 @@ class RoomTimelineWidgetViewState extends State<RoomTimelineWidgetView> {
       highlightedEventState = null;
     }
 
-    int index = timeline.events.indexWhere((event) => event.eventId == eventId);
+    int index = eventIndexes[eventId] ?? -1;
     if (index == -1) {
       setState(() {
         loading = true;
@@ -554,8 +563,7 @@ class RoomTimelineWidgetViewState extends State<RoomTimelineWidgetView> {
       var newTimeline =
           await timeline.room.getTimeline(contextEventId: eventId);
 
-      index =
-          newTimeline.events.indexWhere((event) => event.eventId == eventId);
+      index = newTimeline.events.indexWhere((event) => event.eventId == eventId);
 
       if (index == -1) {
         if (mounted) {
@@ -625,9 +633,7 @@ class RoomTimelineWidgetViewState extends State<RoomTimelineWidgetView> {
   }
 
   void onReadReceiptUpdated(String event) {
-    var keyIndex = eventKeys.indexWhere(
-      (element) => element.$2 == event,
-    );
+    var keyIndex = eventIndexes[event] ?? -1;
 
     if (keyIndex == -1) {
       Log.w("Skipping read receipt update for missing event: $event");
@@ -640,16 +646,8 @@ class RoomTimelineWidgetViewState extends State<RoomTimelineWidgetView> {
 
     var state = key.$1.currentState;
 
-    var index = timeline.events.indexWhere((i) => i.eventId == event);
-
-    if (index == -1) {
-      print("Could not find the event in the timeline view");
-    }
-
-    print("Updating read receipts state: $event");
-
     if (state is TimelineEventViewWidget) {
-      (state as TimelineEventViewWidget).update(index);
+      (state as TimelineEventViewWidget).update(keyIndex);
     } else {
       Log.w("Failed to get state");
     }
