@@ -82,6 +82,13 @@ docker run --rm -p 8080:8080 commet-web
 
 Then open `http://localhost:8080`.
 
+## Distribution packaging helpers
+
+Repository-maintained packaging helpers are available for community distribution channels:
+
+- AUR packaging files for `commet-bin`: [`commet/linux/aur/`](commet/linux/aur/)
+- F-Droid preparation notes and build script: [`commet/android/fdroid/`](commet/android/fdroid/)
+
 ## Commet Federation Kit (CFK)
 
 To reduce Matrix homeserver setup friction, this repo now includes a starter deployment kit in [`cfk/`](cfk/). It includes:

@@ -150,8 +150,13 @@ P1/P2 — Platform support, packaging, and distribution
 - [x] Trouble installing .deb on KDE Ubuntu (GHI #684) https://github.com/commetchat/commet/issues/684
 - [x] Fix .deb landing in filesystem root (GHI #575) https://github.com/commetchat/commet/issues/575
 - [ ] Request AUR package (GHI #357) https://github.com/commetchat/commet/issues/357
+  - [x] Add maintained `commet-bin` AUR packaging files (`PKGBUILD` + `.SRCINFO`) in-repo
+  - [x] Add helper script to bump pkgver and regenerate `.SRCINFO`
+  - [ ] Publish/update `commet-bin` in AUR and verify install on clean Arch environment
 - [x] Debian ARM64 support (GHI #371) https://github.com/commetchat/commet/issues/371
 - [ ] Add to F-Droid (GHI #115) https://github.com/commetchat/commet/issues/115
+  - [x] Add F-Droid build helper script (`BUILD_DETAIL=fdroid`) and project notes/checklist
+  - [ ] Submit/update upstream F-Droid metadata PR and track acceptance
 - [x] Docker image for web client container story (GHI #635) https://github.com/commetchat/commet/issues/635
 
 ## Desktop QoL (P2)
