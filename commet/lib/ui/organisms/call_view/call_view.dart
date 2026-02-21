@@ -45,6 +45,8 @@ class CallView extends StatefulWidget {
 }
 
 class _CallViewState extends State<CallView> {
+  static const Duration _cameraActionTimeout = Duration(seconds: 12);
+
   Timer? statTimer;
   StreamSubscription? sub;
   bool isMouseHovering = false;
@@ -99,7 +101,15 @@ class _CallViewState extends State<CallView> {
     });
 
     try {
-      await action();
+      await action().timeout(
+        _cameraActionTimeout,
+        onTimeout: () {
+          throw TimeoutException(
+            "Camera action timed out. Please check camera permissions and try again.",
+            _cameraActionTimeout,
+          );
+        },
+      );
     } catch (error, stackTrace) {
       if (mounted) {
         await AdaptiveDialog.showError(context, error, stackTrace);
