@@ -35,6 +35,7 @@ import 'package:commet/utils/window_management.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart' show Locale;
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -148,6 +149,7 @@ void appMain() async {
     }
 
     ensureBindingInit();
+    configureImageCacheLimits();
 
     if (PlatformUtils.isLinux || PlatformUtils.isWindows) {
       if (await SingleInstance.tryConnectToMainInstance(commandLineArgs)) {
@@ -178,6 +180,14 @@ void appMain() async {
   } catch (error, stacktrace) {
     runApp(FatalErrorPage(error, stacktrace));
   }
+}
+
+void configureImageCacheLimits() {
+  // Keep Flutter's in-memory image cache bounded to reduce peak RSS growth on
+  // large timelines with many images/avatars loaded in quick succession.
+  final imageCache = PaintingBinding.instance.imageCache;
+  imageCache.maximumSize = 250;
+  imageCache.maximumSizeBytes = 120 << 20; // 120 MiB
 }
 
 WidgetsBinding ensureBindingInit() {

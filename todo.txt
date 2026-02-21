@@ -36,6 +36,8 @@ P0 — Data safety, encryption, and “don’t brick the app”
 - [ ] Fix crash/out-of-memory leading to DB corruption (GHI #296) https://github.com/commetchat/commet/issues/296
   - [ ] Add DB integrity checks + auto-repair / safe reset options
   - [ ] Reduce peak memory (timeline virtualization, image cache caps)
+  - [x] Cap Flutter in-memory image cache to reduce memory spikes
+  - [ ] Complete additional timeline virtualization reductions
   - [ ] Add watchdog to prevent “corrupt on crash” write patterns
 - [x] Fix Windows startup freeze if temp folder exists (GHI #674) https://github.com/commetchat/commet/issues/674
 - [x] Ship libcrypto.dll in Windows installer (GHI #672) https://github.com/commetchat/commet/issues/672
@@ -100,7 +102,7 @@ P1 — Messaging UX, search, and productivity (DP)
 ## Timeline performance / polish (P1)
 - [x] Prevent unnecessary re-evaluation of room fields (GHI #693) https://github.com/commetchat/commet/issues/693
 - [ ] Timeline UX megathread improvements (GHI #2) https://github.com/commetchat/commet/issues/2
-  - [x] Smooth scroll toggle, virtualization improvements, etc. (implemented smooth scroll toggle; virtualization improvements pending)
+  - [x] Smooth scroll toggle, virtualization improvements, etc. (implemented smooth scroll toggle; added timeline cache-extent tuning; deeper virtualization improvements pending)
 
 ===========================================================
 P1 — Spaces/servers, permissions, and moderation (DP)
