@@ -153,6 +153,7 @@ P1/P2 — Platform support, packaging, and distribution
 - [ ] Request AUR package (GHI #357) https://github.com/commetchat/commet/issues/357
   - [x] Add maintained `commet-bin` AUR packaging files (`PKGBUILD` + `.SRCINFO`) in-repo
   - [x] Add helper script to bump pkgver and regenerate `.SRCINFO`
+  - [x] Add clean-Arch container verification script for `commet-bin` packaging (`commet/scripts/verify_aur_package_in_arch_container.sh`)
   - [ ] Publish/update `commet-bin` in AUR and verify install on clean Arch environment
 - [x] Debian ARM64 support (GHI #371) https://github.com/commetchat/commet/issues/371
 - [ ] Add to F-Droid (GHI #115) https://github.com/commetchat/commet/issues/115
