@@ -54,7 +54,7 @@ class MatrixThreadTimeline implements Timeline {
   bool get canLoadFuture => false;
 
   @override
-  bool get canLoadHistory => nextBatch != null && nextChunkRequest != null;
+  bool get canLoadHistory => nextBatch != null && nextChunkRequest == null;
 
   @override
   bool get isLoadingFuture => false;
@@ -308,16 +308,13 @@ class MatrixThreadTimeline implements Timeline {
       var originalIndex =
           events.indexWhere((element) => element.eventId == event.eventId);
 
-      var finalIndex = originalIndex;
-
-      if (finalIndex == -1) {
-        finalIndex = 0;
+      if (originalIndex == -1) {
+        onMainTimelineEventAdded(index);
+        return;
       }
 
-      events[finalIndex] = event;
-      if (originalIndex != -1) {
-        onChange.add(finalIndex);
-      }
+      events[originalIndex] = event;
+      onChange.add(originalIndex);
     }
   }
 
@@ -327,11 +324,12 @@ class MatrixThreadTimeline implements Timeline {
       var index =
           events.indexWhere((element) => element.eventId == event.eventId);
 
-      events.removeAt(index);
-
-      if (index != -1) {
-        onRemove.add(index);
+      if (index == -1) {
+        return;
       }
+
+      events.removeAt(index);
+      onRemove.add(index);
     }
   }
 
