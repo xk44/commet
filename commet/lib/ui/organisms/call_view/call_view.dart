@@ -5,6 +5,7 @@ import 'package:commet/client/room.dart';
 import 'package:commet/config/layout_config.dart';
 import 'package:commet/ui/atoms/lightbox.dart';
 import 'package:commet/ui/layout/bento.dart';
+import 'package:commet/ui/navigation/adaptive_dialog.dart';
 import 'package:commet/ui/organisms/call_view/voip_fullscreen_stream_view.dart';
 import 'package:commet/ui/organisms/call_view/voip_stream_view.dart';
 import 'package:commet/utils/animation/ring_shaker.dart';
@@ -47,6 +48,8 @@ class _CallViewState extends State<CallView> {
   Timer? statTimer;
   StreamSubscription? sub;
   bool isMouseHovering = false;
+  bool isCameraActionInProgress = false;
+  bool isScreenshareActionInProgress = false;
   VoipStream? mainStream;
   late Room room;
 
@@ -84,6 +87,54 @@ class _CallViewState extends State<CallView> {
         _ => const Placeholder()
       },
     );
+  }
+
+  Future<void> _runCameraAction(Future<void> Function() action) async {
+    if (isCameraActionInProgress) {
+      return;
+    }
+
+    setState(() {
+      isCameraActionInProgress = true;
+    });
+
+    try {
+      await action();
+    } catch (error, stackTrace) {
+      if (mounted) {
+        await AdaptiveDialog.showError(context, error, stackTrace);
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          isCameraActionInProgress = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _runScreenshareAction(Future<void> Function() action) async {
+    if (isScreenshareActionInProgress) {
+      return;
+    }
+
+    setState(() {
+      isScreenshareActionInProgress = true;
+    });
+
+    try {
+      await action();
+    } catch (error, stackTrace) {
+      if (mounted) {
+        await AdaptiveDialog.showError(context, error, stackTrace);
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          isScreenshareActionInProgress = false;
+        });
+      }
+    }
   }
 
   Widget callOutgoingView() {
@@ -138,12 +189,22 @@ class _CallViewState extends State<CallView> {
                     tiamat.CircleButton(
                         radius: buttonRadius,
                         icon: Icons.screen_share_outlined,
-                        onPressed: widget.pickScreenshareSource),
+                        onPressed: isScreenshareActionInProgress
+                            ? null
+                            : widget.pickScreenshareSource == null
+                                ? null
+                                : () => _runScreenshareAction(
+                                    widget.pickScreenshareSource!)),
                   if (widget.currentSession.isSharingScreen && canScreenshare)
                     tiamat.CircleButton(
                       radius: buttonRadius,
                       icon: Icons.stop_screen_share,
-                      onPressed: widget.stopScreenshare,
+                      onPressed: isScreenshareActionInProgress
+                          ? null
+                          : widget.stopScreenshare == null
+                              ? null
+                              : () => _runScreenshareAction(
+                                  widget.stopScreenshare!),
                     ),
                   if (canMute)
                     tiamat.CircleButton(
@@ -163,9 +224,17 @@ class _CallViewState extends State<CallView> {
                       icon: widget.currentSession.isCameraEnabled
                           ? Icons.no_photography
                           : Icons.camera_alt_outlined,
-                      onPressed: widget.currentSession.isCameraEnabled
-                          ? widget.disableCamera
-                          : widget.pickCamera,
+                      onPressed: isCameraActionInProgress
+                          ? null
+                          : widget.currentSession.isCameraEnabled
+                              ? widget.disableCamera == null
+                                  ? null
+                                  : () =>
+                                      _runCameraAction(widget.disableCamera!)
+                              : widget.pickCamera == null
+                                  ? null
+                                  : () =>
+                                      _runCameraAction(widget.pickCamera!),
                     ),
                   if (canHangUp)
                     tiamat.CircleButton(
