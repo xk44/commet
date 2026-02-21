@@ -2,13 +2,24 @@
 set -euo pipefail
 
 strict=0
-if [[ "${1:-}" == "--strict" ]]; then
-  strict=1
-elif [[ -n "${1:-}" ]]; then
-  echo "Unknown argument: $1" >&2
-  echo "Usage: $0 [--strict]" >&2
-  exit 1
-fi
+check_issue_state=1
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --strict)
+      strict=1
+      ;;
+    --skip-issue-state)
+      check_issue_state=0
+      ;;
+    *)
+      echo "Unknown argument: $1" >&2
+      echo "Usage: $0 [--strict] [--skip-issue-state]" >&2
+      exit 1
+      ;;
+  esac
+  shift
+done
 
 repo_root="$(cd "$(dirname "$0")/../.." && pwd)"
 project_root="$repo_root/commet"
@@ -79,6 +90,19 @@ echo
 echo "Next-step trackers"
 echo "- AUR publish/update tracker (GHI #357): https://github.com/commetchat/commet/issues/357"
 echo "- F-Droid submission tracker (GHI #115): https://github.com/commetchat/commet/issues/115"
+
+if [[ "$check_issue_state" == "1" ]]; then
+  issue_api_root="https://api.github.com/repos/commetchat/commet/issues"
+  for issue in 357 115; do
+    if issue_response="$(curl -fsSL "$issue_api_root/$issue" 2>/dev/null)"; then
+      issue_state="$(echo "$issue_response" | jq -r '.state // "unknown"')"
+      issue_title="$(echo "$issue_response" | jq -r '.title // "(no title)"')"
+      echo "- GHI #$issue status: $issue_state ($issue_title)"
+    else
+      echo "- GHI #$issue status: unavailable (GitHub API request failed)"
+    fi
+  done
+fi
 
 if [[ "$strict" == "1" ]]; then
   if [[ "$aur_matches_local" != "1" || "$fdroid_matches_local" != "1" ]]; then
