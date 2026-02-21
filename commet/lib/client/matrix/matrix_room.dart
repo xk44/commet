@@ -33,6 +33,7 @@ import 'package:commet/client/matrix/timeline_events/matrix_timeline_event_encry
 import 'package:commet/client/matrix/timeline_events/matrix_timeline_event_membership.dart';
 import 'package:commet/client/matrix/timeline_events/matrix_timeline_event_message.dart';
 import 'package:commet/client/matrix/timeline_events/matrix_timeline_event_pinned_messages.dart';
+import 'package:commet/client/matrix/timeline_events/matrix_timeline_event_poll.dart';
 import 'package:commet/client/matrix/timeline_events/matrix_timeline_event_redaction.dart';
 import 'package:commet/client/matrix/timeline_events/matrix_timeline_event_sticker.dart';
 import 'package:commet/client/matrix/timeline_events/matrix_timeline_event_unknown.dart';
@@ -534,6 +535,15 @@ class MatrixRoom extends Room {
           MatrixTimelineEventPinnedMessages(event, client: c),
         "chat.commet.calendar_events" =>
           MatrixTimelineEventEditCalendar(event, client: c),
+        "m.poll.start" => MatrixTimelineEventPoll(event, client: c),
+        "org.matrix.msc3381.poll.start" =>
+          MatrixTimelineEventPoll(event, client: c),
+        "m.poll.response" => MatrixTimelineEventPoll(event, client: c),
+        "org.matrix.msc3381.poll.response" =>
+          MatrixTimelineEventPoll(event, client: c),
+        "m.poll.end" => MatrixTimelineEventPoll(event, client: c),
+        "org.matrix.msc3381.poll.end" =>
+          MatrixTimelineEventPoll(event, client: c),
         _ => null
       };
 

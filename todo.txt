@@ -92,7 +92,8 @@ P1 — Messaging UX, search, and productivity (DP)
 - [x] Fix .svg profile picture not showing (GHI #576) https://github.com/commetchat/commet/issues/576
 
 ## Polls (P1)
-- [ ] Support polls using MSC3381 (GHI #601) https://github.com/commetchat/commet/issues/601
+- [x] Support polls using MSC3381 (GHI #601) https://github.com/commetchat/commet/issues/601
+  - [x] Add timeline support for poll start/response/end events (stable + unstable event types)
 
 ## Timeline performance / polish (P1)
 - [x] Prevent unnecessary re-evaluation of room fields (GHI #693) https://github.com/commetchat/commet/issues/693
