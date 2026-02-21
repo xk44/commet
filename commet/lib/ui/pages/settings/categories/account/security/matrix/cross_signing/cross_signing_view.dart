@@ -108,6 +108,12 @@ class _MatrixCrossSigningViewState extends State<MatrixCrossSigningView> {
       desc:
           "Shown when a user is attempting to recover their old messages, explains that they need the recovery key");
 
+  String get labelMatrixRecoveryKeyInvalid => Intl.message(
+      "That recovery key was not accepted. Please check for missing characters/spaces and try again.",
+      name: "labelMatrixRecoveryKeyInvalid",
+      desc:
+          "Shown when user enters an invalid key while restoring encrypted backup");
+
   String get promptMatrixRecoveryKeyInput => Intl.message("Recovery key",
       desc: "Placeholder text for the recovery key input box",
       name: "promptMatrixRecoveryKeyInput");
@@ -236,13 +242,9 @@ class _MatrixCrossSigningViewState extends State<MatrixCrossSigningView> {
       case BootstrapState.askUseExistingSsss:
         return askUseExistingSsss();
       case BootstrapState.askUnlockSsss:
-        // ignore: todo
-        // TODO: Handle this case.
-        break;
+        return openExistingSsss();
       case BootstrapState.askBadSsss:
-        // ignore: todo
-        // TODO: Handle this case.
-        break;
+        return openExistingSsss(showInvalidKeyError: true);
       case BootstrapState.askNewSsss:
         return askNewSsss();
       case BootstrapState.openExistingSsss:
@@ -302,7 +304,7 @@ class _MatrixCrossSigningViewState extends State<MatrixCrossSigningView> {
     );
   }
 
-  Widget openExistingSsss() {
+  Widget openExistingSsss({bool showInvalidKeyError = false}) {
     return SizedBox(
       width: 400,
       child: m.Column(
@@ -318,7 +320,11 @@ class _MatrixCrossSigningViewState extends State<MatrixCrossSigningView> {
                 placeholder: promptMatrixRecoveryKeyInput,
                 controller: keyInputController,
                 obscureText: true,
-              )
+              ),
+              if (showInvalidKeyError) ...[
+                const SizedBox(height: 8),
+                tiamat.Text.error(labelMatrixRecoveryKeyInvalid),
+              ],
             ],
           ),
           const SizedBox(
@@ -327,7 +333,11 @@ class _MatrixCrossSigningViewState extends State<MatrixCrossSigningView> {
           tiamat.Button(
               text: CommonStrings.promptConfirm,
               onTap: () {
-                widget.openExistingSsss?.call(keyInputController.text);
+                final key = keyInputController.text.trim();
+                if (key.isEmpty) {
+                  return;
+                }
+                widget.openExistingSsss?.call(key);
               })
         ],
       ),

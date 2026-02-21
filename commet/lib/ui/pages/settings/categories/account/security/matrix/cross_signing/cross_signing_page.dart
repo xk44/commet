@@ -69,12 +69,23 @@ class MatrixCrossSigningPageState extends State<MatrixCrossSigningPage> {
         bootstrapper?.wipeOnlineKeyBackup(wipe);
       },
       openExistingSsss: (key) async {
-        await bootstrapper?.newSsssKey!.unlock(keyOrPassphrase: key);
-        await bootstrapper?.client.encryption!.crossSigning
-            .selfSign(keyOrPassphrase: key);
-        await bootstrapper?.openExistingSsss();
-        await bootstrapper?.askSetupCrossSigning(setupMasterKey: true);
-        bootstrapper?.wipeOnlineKeyBackup(false);
+        final activeBootstrapper = bootstrapper;
+        if (activeBootstrapper == null || key.trim().isEmpty) {
+          return;
+        }
+
+        try {
+          await activeBootstrapper.newSsssKey?.unlock(keyOrPassphrase: key);
+          await activeBootstrapper.client.encryption?.crossSigning
+              .selfSign(keyOrPassphrase: key);
+          await activeBootstrapper.openExistingSsss();
+          await activeBootstrapper.askSetupCrossSigning(setupMasterKey: true);
+          activeBootstrapper.wipeOnlineKeyBackup(false);
+        } catch (_) {
+          setState(() {
+            state = BootstrapState.askBadSsss;
+          });
+        }
       },
       wipeCrossSigning: (wipe) {
         bootstrapper?.wipeCrossSigning(wipe);

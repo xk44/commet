@@ -21,7 +21,8 @@ P0 — Data safety, encryption, and “don’t brick the app”
 - [ ] Fix “can’t see encrypted message that can be seen on other apps” (GHI #388) https://github.com/commetchat/commet/issues/388
 - [ ] Fix “New login session verification not working” (GHI #668) https://github.com/commetchat/commet/issues/668
 - [x] Fix verification prompt not showing on first session after login (GHI #692) https://github.com/commetchat/commet/issues/692
-- [ ] Fix “Confirm session key button not working [WINDOWS ONLY]” (GHI #675) https://github.com/commetchat/commet/issues/675
+- [x] Fix “Confirm session key button not working [WINDOWS ONLY]” (GHI #675) https://github.com/commetchat/commet/issues/675
+  - [x] Handle unlock/invalid-key bootstrap states with inline recovery-key error feedback
 - [x] Fix crash: beginVerification null check operator (GHI #680) https://github.com/commetchat/commet/issues/680
 - [ ] Fix “Unable to verify sessions from Android only” (GHI #380) https://github.com/commetchat/commet/issues/380
 - [x] Add clear UX feedback for unverified sessions (GHI #101) https://github.com/commetchat/commet/issues/101
