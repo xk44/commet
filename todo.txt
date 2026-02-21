@@ -106,9 +106,9 @@ P1 — Spaces/servers, permissions, and moderation (DP)
 ## Spaces/rooms correctness (P1)
 - [x] Fix newly created spaces named “Empty Chat” with no topic (GHI #664) https://github.com/commetchat/commet/issues/664
 - [x] Fix misleading space notifications option (GHI #678) https://github.com/commetchat/commet/issues/678
-- [ ] Restricted room support (GHI #627) https://github.com/commetchat/commet/issues/627
+- [x] Restricted room support (GHI #627) https://github.com/commetchat/commet/issues/627
   - [x] Add restricted-visibility mapping for joined rooms/spaces and room previews (visibility + lock icon handling)
-  - [x] Add room creation flow for restricted rooms (join-rule editing UI still deferred)
+  - [x] Add room creation flow for restricted rooms (including join-rule editing UI in room settings)
 
 ## DP gaps (create issues)
 - [ ] (NEW / DP) Roles/permissions UI comparable to Discord roles/channel perms
