@@ -165,11 +165,13 @@ P1/P2 — Platform support, packaging, and distribution
   - [x] Add publication status checker script to compare local versions against AUR + F-Droid metadata (`commet/scripts/check_packaging_publication_status.sh`)
   - [x] Extend publication status checker with strict mode (`--strict`) and issue tracker links for AUR/F-Droid publication follow-up
   - [x] Extend publication status checker to optionally query and print current GitHub issue states for #357/#115
+  - [x] Add one-shot packaging publication prep helper to run status checks + optional clean-Arch validation + regenerate F-Droid submission draft (`commet/scripts/prepare_packaging_publication_bundle.sh`)
   - [ ] Publish/update `commet-bin` in AUR and verify install on clean Arch environment
 - [x] Debian ARM64 support (GHI #371) https://github.com/commetchat/commet/issues/371
 - [ ] Add to F-Droid (GHI #115) https://github.com/commetchat/commet/issues/115
   - [x] Add F-Droid build helper script (`BUILD_DETAIL=fdroid`) and project notes/checklist
   - [x] Add script to generate an editable F-Droid metadata submission template with version + optional APK checksum
+  - [x] Add one-shot packaging publication prep helper to run status checks + optional clean-Arch validation + regenerate F-Droid submission draft (`commet/scripts/prepare_packaging_publication_bundle.sh`)
   - [ ] Submit/update upstream F-Droid metadata PR and track acceptance
 - [x] Docker image for web client container story (GHI #635) https://github.com/commetchat/commet/issues/635
 

@@ -53,6 +53,20 @@ Generate a ready-to-edit metadata submission draft from `pubspec.yaml`:
 Optional: pass a built APK path to include the SHA-256 checksum in the generated
 `android/fdroid/submission_template.md` file.
 
+
+## End-to-end publication prep helper
+
+Run a single command to perform local publication prep checks and regenerate the
+F-Droid submission template:
+
+```bash
+./scripts/prepare_packaging_publication_bundle.sh
+
+# Optional flags
+./scripts/prepare_packaging_publication_bundle.sh --skip-aur-verify --skip-issue-state
+./scripts/prepare_packaging_publication_bundle.sh --fdroid-apk build/app/outputs/flutter-apk/app-release.apk
+```
+
 ## Notes
 
 Google services integration remains opt-in and disabled by default in this repository.
