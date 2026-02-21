@@ -27,6 +27,17 @@ This sets:
    - license details (AGPL-3.0-only)
    - reproducible build notes
 
+## Metadata PR helper
+
+Generate a ready-to-edit metadata submission draft from `pubspec.yaml`:
+
+```bash
+./scripts/generate_fdroid_submission_template.sh
+```
+
+Optional: pass a built APK path to include the SHA-256 checksum in the generated
+`android/fdroid/submission_template.md` file.
+
 ## Notes
 
 Google services integration remains opt-in and disabled by default in this repository.

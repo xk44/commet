@@ -160,10 +160,12 @@ P1/P2 — Platform support, packaging, and distribution
   - [x] Add maintained `commet-bin` AUR packaging files (`PKGBUILD` + `.SRCINFO`) in-repo
   - [x] Add helper script to bump pkgver and regenerate `.SRCINFO`
   - [x] Add clean-Arch container verification script for `commet-bin` packaging (`commet/scripts/verify_aur_package_in_arch_container.sh`)
+  - [x] Extend clean-Arch verification script to install the built `commet-bin` package and assert installability
   - [ ] Publish/update `commet-bin` in AUR and verify install on clean Arch environment
 - [x] Debian ARM64 support (GHI #371) https://github.com/commetchat/commet/issues/371
 - [ ] Add to F-Droid (GHI #115) https://github.com/commetchat/commet/issues/115
   - [x] Add F-Droid build helper script (`BUILD_DETAIL=fdroid`) and project notes/checklist
+  - [x] Add script to generate an editable F-Droid metadata submission template with version + optional APK checksum
   - [ ] Submit/update upstream F-Droid metadata PR and track acceptance
 - [x] Docker image for web client container story (GHI #635) https://github.com/commetchat/commet/issues/635
 
