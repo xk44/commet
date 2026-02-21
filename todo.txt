@@ -163,6 +163,7 @@ P1/P2 — Platform support, packaging, and distribution
   - [x] Extend clean-Arch verification script to install the built `commet-bin` package and assert installability
   - [x] Add publication status checker script to compare local versions against AUR + F-Droid metadata (`commet/scripts/check_packaging_publication_status.sh`)
   - [x] Extend publication status checker with strict mode (`--strict`) and issue tracker links for AUR/F-Droid publication follow-up
+  - [x] Extend publication status checker to optionally query and print current GitHub issue states for #357/#115
   - [ ] Publish/update `commet-bin` in AUR and verify install on clean Arch environment
 - [x] Debian ARM64 support (GHI #371) https://github.com/commetchat/commet/issues/371
 - [ ] Add to F-Droid (GHI #115) https://github.com/commetchat/commet/issues/115

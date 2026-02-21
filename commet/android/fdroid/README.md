@@ -37,6 +37,9 @@ Check whether local versions are already reflected in AUR (`commet-bin`) and F-D
 
 # CI-style check: exits non-zero when AUR/F-Droid are not in sync
 ./commet/scripts/check_packaging_publication_status.sh --strict
+
+# Optional: skip GitHub issue-state lookups (useful in rate-limited/offline environments)
+./commet/scripts/check_packaging_publication_status.sh --skip-issue-state
 ```
 
 ## Metadata PR helper
