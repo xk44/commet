@@ -182,9 +182,16 @@ class RoomTimelineWidgetViewState extends State<RoomTimelineWidgetView> {
     var existing = eventKeys[index];
     eventKeys[index] = (existing.$1, event.eventId);
 
-    var key = eventKeys.firstWhere(
+    var keyIndex = eventKeys.indexWhere(
       (element) => element.$2 == event.eventId,
     );
+
+    if (keyIndex == -1) {
+      Log.w("Failed to find updated event key for ${event.eventId}");
+      return;
+    }
+
+    var key = eventKeys[keyIndex];
 
     assert(event.eventId == key.$2);
 
@@ -551,6 +558,11 @@ class RoomTimelineWidgetViewState extends State<RoomTimelineWidgetView> {
           newTimeline.events.indexWhere((event) => event.eventId == eventId);
 
       if (index == -1) {
+        if (mounted) {
+          setState(() {
+            loading = false;
+          });
+        }
         return;
       }
 
@@ -613,9 +625,16 @@ class RoomTimelineWidgetViewState extends State<RoomTimelineWidgetView> {
   }
 
   void onReadReceiptUpdated(String event) {
-    var key = eventKeys.firstWhere(
+    var keyIndex = eventKeys.indexWhere(
       (element) => element.$2 == event,
     );
+
+    if (keyIndex == -1) {
+      Log.w("Skipping read receipt update for missing event: $event");
+      return;
+    }
+
+    var key = eventKeys[keyIndex];
 
     assert(event == key.$2);
 
