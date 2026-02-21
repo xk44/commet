@@ -22,6 +22,15 @@ docker run --rm \
     su - builder -c "cd /tmp/pkg && makepkg --printsrcinfo > /tmp/pkg/.SRCINFO.generated"
     su - builder -c "cd /tmp/pkg && diff -u .SRCINFO .SRCINFO.generated"
     su - builder -c "cd /tmp/pkg && makepkg -s --noconfirm"
+    package_path="$(find /tmp/pkg -maxdepth 1 -type f -name '*.pkg.tar.*' | head -n1)"
+
+    if [[ -z "$package_path" ]]; then
+      echo "failed to locate built package artifact" >&2
+      exit 1
+    fi
+
+    pacman -U --noconfirm "$package_path"
+    pacman -Q commet-bin
   '
 
-echo "AUR packaging validation succeeded in a clean Arch container"
+echo "AUR packaging validation and installation check succeeded in a clean Arch container"
