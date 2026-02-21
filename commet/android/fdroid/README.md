@@ -27,6 +27,15 @@ This sets:
    - license details (AGPL-3.0-only)
    - reproducible build notes
 
+
+## Publication status check
+
+Check whether local versions are already reflected in AUR (`commet-bin`) and F-Droid metadata (`chat.commet.commetapp`):
+
+```bash
+./commet/scripts/check_packaging_publication_status.sh
+```
+
 ## Metadata PR helper
 
 Generate a ready-to-edit metadata submission draft from `pubspec.yaml`:

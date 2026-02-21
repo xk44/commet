@@ -22,6 +22,15 @@ This directory contains the packaging files used to publish Commet to the Arch U
 
 For convenience, you can also use `commet/scripts/update_aur_pkgbuild.sh` from the repository root.
 
+
+## Publication status check
+
+Use the repository helper to compare local packaging versions with what is currently published in AUR and F-Droid metadata:
+
+```bash
+./commet/scripts/check_packaging_publication_status.sh
+```
+
 ## Clean Arch verification
 
 To validate the package in a clean Arch environment before publishing to AUR, run:
