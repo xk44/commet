@@ -41,7 +41,7 @@ P0 — Data safety, encryption, and “don’t brick the app”
 
 ## Core navigation reliability (P0)
 - [x] Fix notifications opening wrong room (GHI #591) https://github.com/commetchat/commet/issues/591
-- [ ] Fix “Open whole space instead of subspace from notification” (GHI #383) https://github.com/commetchat/commet/issues/383
+- [x] Fix “Open whole space instead of subspace from notification” (GHI #383) https://github.com/commetchat/commet/issues/383
 
 ===========================================================
 P1 — Calls, streaming, and Discord-level real-time features
