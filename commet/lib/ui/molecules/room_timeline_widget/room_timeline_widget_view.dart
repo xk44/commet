@@ -373,7 +373,8 @@ class RoomTimelineWidgetViewState extends State<RoomTimelineWidgetView> {
                   controller: controller,
                   reverse: true,
                   center: centerKey,
-                  cacheExtent: 800,
+                  // Keep cache extent modest to reduce memory pressure on long timelines.
+                  cacheExtent: 400,
                   slivers: <Widget>[
                     if (isLoadingFuture)
                       SliverList(

@@ -37,7 +37,7 @@ P0 — Data safety, encryption, and “don’t brick the app”
   - [ ] Add DB integrity checks + auto-repair / safe reset options
   - [ ] Reduce peak memory (timeline virtualization, image cache caps)
   - [x] Cap Flutter in-memory image cache to reduce memory spikes
-  - [ ] Complete additional timeline virtualization reductions
+  - [x] Complete additional timeline virtualization reductions
   - [ ] Add watchdog to prevent “corrupt on crash” write patterns
 - [x] Fix Windows startup freeze if temp folder exists (GHI #674) https://github.com/commetchat/commet/issues/674
 - [x] Ship libcrypto.dll in Windows installer (GHI #672) https://github.com/commetchat/commet/issues/672
