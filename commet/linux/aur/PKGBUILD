@@ -1,0 +1,39 @@
+# Maintainer: Commet Contributors <contact@commet.chat>
+pkgname=commet-bin
+pkgver=0.4.0
+pkgrel=1
+pkgdesc="Feature-rich Matrix client focused on privacy and usability"
+arch=('x86_64')
+url='https://github.com/commetchat/commet'
+license=('AGPL-3.0-only')
+depends=('gtk3' 'mpv' 'ffmpeg')
+optdepends=('libappindicator-gtk3: tray icon support on desktops using appindicator')
+provides=('commet')
+conflicts=('commet')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/commetchat/commet/releases/download/v0.4.0/commet-linux-portable-x64.tar.gz")
+sha256sums=('SKIP')
+
+package() {
+  install -dm755 "$pkgdir/opt/commet"
+  cp -a "$srcdir/bundle/." "$pkgdir/opt/commet/"
+
+  install -dm755 "$pkgdir/usr/bin"
+  ln -s /opt/commet/commet "$pkgdir/usr/bin/commet"
+
+  install -dm755 "$pkgdir/usr/share/applications"
+  cat > "$pkgdir/usr/share/applications/chat.commet.commetapp.desktop" <<'DESKTOP'
+[Desktop Entry]
+Name=Commet
+Comment=Feature-rich Matrix client
+Exec=commet
+Icon=chat.commet.commetapp
+Terminal=false
+Type=Application
+Categories=Network;InstantMessaging;
+StartupNotify=true
+DESKTOP
+
+  install -dm755 "$pkgdir/usr/share/icons/hicolor/256x256/apps"
+  install -m644 "$srcdir/bundle/data/flutter_assets/assets/images/logo.png" \
+    "$pkgdir/usr/share/icons/hicolor/256x256/apps/chat.commet.commetapp.png"
+}

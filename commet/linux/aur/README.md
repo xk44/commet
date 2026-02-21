@@ -1,0 +1,23 @@
+# AUR packaging (commet-bin)
+
+This directory contains the packaging files used to publish Commet to the Arch User Repository as a prebuilt binary package.
+
+## Files
+
+- `PKGBUILD`: package definition for `commet-bin`
+- `.SRCINFO`: metadata generated from the PKGBUILD for AUR upload
+
+## Update workflow
+
+1. Update `pkgver` in `PKGBUILD`.
+2. Regenerate `.SRCINFO`:
+   ```bash
+   cd commet/linux/aur
+   makepkg --printsrcinfo > .SRCINFO
+   ```
+3. Validate locally:
+   ```bash
+   makepkg -si
+   ```
+
+For convenience, you can also use `commet/scripts/update_aur_pkgbuild.sh` from the repository root.
