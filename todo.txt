@@ -50,7 +50,7 @@ P1 — Calls, streaming, and Discord-level real-time features
 
 ## Calls / voice / SS (P1, some P0)
 - [ ] Fix app freeze when first enabling webcam (GHI #670) https://github.com/commetchat/commet/issues/670
-- [ ] Fix voice channel default permissions (“moderator only” bug) (GHI #628) https://github.com/commetchat/commet/issues/628
+- [x] Fix voice channel default permissions (“moderator only” bug) (GHI #628) https://github.com/commetchat/commet/issues/628
 - [ ] Implement/track Element Call integration (GHI #450) https://github.com/commetchat/commet/issues/450
   - [ ] Use it as the path to reliable group calls + better SS + scalability
 - [ ] (NEW) Fix SS low framerate + add SS audio

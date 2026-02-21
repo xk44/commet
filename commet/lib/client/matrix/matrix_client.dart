@@ -430,6 +430,25 @@ class MatrixClient extends Client {
 
     if (args.roomType == RoomType.voipRoom) {
       creationContent = {"type": "org.matrix.msc3417.call"};
+
+      initialState ??= [];
+      initialState.add(
+        matrix.StateEvent(
+          type: matrix.EventTypes.RoomPowerLevels,
+          content: {
+            "users_default": 0,
+            "events_default": 0,
+            "state_default": 50,
+            "invite": 0,
+            "kick": 50,
+            "ban": 50,
+            "redact": 50,
+            "events": {
+              "org.matrix.msc3401.call.member": 0,
+            },
+          },
+        ),
+      );
     }
 
     if (args.roomType == RoomType.calendar) {
