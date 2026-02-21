@@ -21,3 +21,13 @@ This directory contains the packaging files used to publish Commet to the Arch U
    ```
 
 For convenience, you can also use `commet/scripts/update_aur_pkgbuild.sh` from the repository root.
+
+## Clean Arch verification
+
+To validate the package in a clean Arch environment before publishing to AUR, run:
+
+```bash
+./commet/scripts/verify_aur_package_in_arch_container.sh
+```
+
+This script uses Docker to build in `archlinux:latest`, regenerate `.SRCINFO`, verify it matches the committed file, and run `makepkg -s`.
